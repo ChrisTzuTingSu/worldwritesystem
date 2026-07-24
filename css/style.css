@@ -92,3 +92,86 @@ main {
 .char-empty {
     background-color: #f1f3f5;
 }
+/* 新增表頭超連結樣式 */
+.lang-header {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+.lang-header:hover {
+    background: #1a252f;
+}
+
+/* 語言介紹彈出視窗樣式 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #fff;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 2rem;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.alphabet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+
+.alphabet-card {
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.alphabet-card:hover {
+    background: var(--hover-color);
+}
+
+.alphabet-char {
+    font-size: 2rem;
+    display: block;
+}
+
+.alphabet-name {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 5px;
+}
