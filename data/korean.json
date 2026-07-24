@@ -1,0 +1,117 @@
+{
+  "title": "特徵文字 (韓文)",
+  "description": "朝鮮世宗大王主導創制的諺文。子音字母的形狀仿造發音器官的輪廓，並與母音組合為方塊字形式，屬系統化程度極高的特徵文字。",
+  "headers": [
+    { "name": "子音對應" },
+    { "name": "a (ㅏ)", "langCode": "ko-KR" },
+    { "name": "ya (ㅑ)", "langCode": "ko-KR" },
+    { "name": "eo (ㅓ)", "langCode": "ko-KR" },
+    { "name": "yeo (ㅕ)", "langCode": "ko-KR" },
+    { "name": "o (ㅗ)", "langCode": "ko-KR" },
+    { "name": "yo (ㅛ)", "langCode": "ko-KR" },
+    { "name": "u (ㅜ)", "langCode": "ko-KR" },
+    { "name": "yu (ㅠ)", "langCode": "ko-KR" },
+    { "name": "eu (ㅡ)", "langCode": "ko-KR" },
+    { "name": "i (ㅣ)", "langCode": "ko-KR" }
+  ],
+  "rows": [
+    {
+      "phonetic": "g / k (ㄱ)",
+      "characters": [
+        { "char": "가" }, { "char": "갸" }, { "char": "거" }, { "char": "겨" }, { "char": "고" },
+        { "char": "교" }, { "char": "구" }, { "char": "규" }, { "char": "그" }, { "char": "기" }
+      ]
+    },
+    {
+      "phonetic": "n (ㄴ)",
+      "characters": [
+        { "char": "나" }, { "char": "냐" }, { "char": "너" }, { "char": "녀" }, { "char": "노" },
+        { "char": "뇨" }, { "char": "누" }, { "char": "뉴" }, { "char": "느" }, { "char": "니" }
+      ]
+    },
+    {
+      "phonetic": "d / t (ㄷ)",
+      "characters": [
+        { "char": "다" }, { "char": "댜" }, { "char": "더" }, { "char": "뎌" }, { "char": "도" },
+        { "char": "됴" }, { "char": "두" }, { "char": "듀" }, { "char": "드" }, { "char": "디" }
+      ]
+    },
+    {
+      "phonetic": "r / l (ㄹ)",
+      "characters": [
+        { "char": "라" }, { "char": "랴" }, { "char": "러" }, { "char": "려" }, { "char": "로" },
+        { "char": "료" }, { "char": "루" }, { "char": "류" }, { "char": "르" }, { "char": "리" }
+      ]
+    },
+    {
+      "phonetic": "m (ㅁ)",
+      "characters": [
+        { "char": "마" }, { "char": "먀" }, { "char": "머" }, { "char": "며" }, { "char": "모" },
+        { "char": "묘" }, { "char": "무" }, { "char": "뮤" }, { "char": "므" }, { "char": "미" }
+      ]
+    },
+    {
+      "phonetic": "b / p (ㅂ)",
+      "characters": [
+        { "char": "바" }, { "char": "뱌" }, { "char": "버" }, { "char": "벼" }, { "char": "보" },
+        { "char": "뵤" }, { "char": "부" }, { "char": "뷰" }, { "char": "브" }, { "char": "비" }
+      ]
+    },
+    {
+      "phonetic": "s (ㅅ)",
+      "characters": [
+        { "char": "사" }, { "char": "샤" }, { "char": "서" }, { "char": "셔" }, { "char": "소" },
+        { "char": "쇼" }, { "char": "수" }, { "char": "슈" }, { "char": "스" }, { "char": "시" }
+      ]
+    },
+    {
+      "phonetic": "ng (ㅇ)",
+      "characters": [
+        { "char": "아" }, { "char": "야" }, { "char": "어" }, { "char": "여" }, { "char": "오" },
+        { "char": "요" }, { "char": "우" }, { "char": "유" }, { "char": "으" }, { "char": "이" }
+      ]
+    },
+    {
+      "phonetic": "j (ㅈ)",
+      "characters": [
+        { "char": "자" }, { "char": "쟈" }, { "char": "저" }, { "char": "져" }, { "char": "조" },
+        { "char": "죠" }, { "char": "주" }, { "char": "쥬" }, { "char": "즈" }, { "char": "지" }
+      ]
+    },
+    {
+      "phonetic": "ch (ㅊ)",
+      "characters": [
+        { "char": "차" }, { "char": "챠" }, { "char": "처" }, { "char": "쳐" }, { "char": "초" },
+        { "char": "쵸" }, { "char": "추" }, { "char": "츄" }, { "char": "츠" }, { "char": "치" }
+      ]
+    },
+    {
+      "phonetic": "k (ㅋ)",
+      "characters": [
+        { "char": "카" }, { "char": "캬" }, { "char": "커" }, { "char": "켜" }, { "char": "코" },
+        { "char": "쿄" }, { "char": "쿠" }, { "char": "큐" }, { "char": "크" }, { "char": "키" }
+      ]
+    },
+    {
+      "phonetic": "t (ㅌ)",
+      "characters": [
+        { "char": "타" }, { "char": "탸" }, { "char": "터" }, { "char": "텨" }, { "char": "토" },
+        { "char": "툐" }, { "char": "투" }, { "char": "튜" }, { "char": "트" }, { "char": "티" }
+      ]
+    },
+    {
+      "phonetic": "p (ㅍ)",
+      "characters": [
+        { "char": "파" }, { "char": "퍄" }, { "char": "퍼" }, { "char": "펴" }, { "char": "포" },
+        { "char": "표" }, { "char": "푸" }, { "char": "퓨" }, { "char": "프" }, { "char": "피" }
+      ]
+    },
+    {
+      "phonetic": "h (ㅎ)",
+      "characters": [
+        { "char": "하" }, { "char": "햐" }, { "char": "허" }, { "char": "혀" }, { "char": "호" },
+        { "char": "효" }, { "char": "후" }, { "char": "휴" }, { "char": "흐" }, { "char": "히" }
+      ]
+    }
+  ]
+}
