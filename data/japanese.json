@@ -1,0 +1,131 @@
+{
+  "title": "音節文字 (日文)",
+  "description": "日本擷取漢字的草書體創制平假名，擷取漢字偏旁創制片假名。此處依五十音圖排列展示。",
+  "headers": [
+    { "name": "子音對應" },
+    { "name": "平假名 (a)", "langCode": "ja-JP" },
+    { "name": "平假名 (i)", "langCode": "ja-JP" },
+    { "name": "平假名 (u)", "langCode": "ja-JP" },
+    { "name": "平假名 (e)", "langCode": "ja-JP" },
+    { "name": "平假名 (o)", "langCode": "ja-JP" },
+    { "name": "片假名 (a)", "langCode": "ja-JP" },
+    { "name": "片假名 (i)", "langCode": "ja-JP" },
+    { "name": "片假名 (u)", "langCode": "ja-JP" },
+    { "name": "片假名 (e)", "langCode": "ja-JP" },
+    { "name": "片假名 (o)", "langCode": "ja-JP" }
+  ],
+  "rows": [
+    {
+      "phonetic": "母音 (無子音)",
+      "characters": [
+        { "char": "あ" }, { "char": "い" }, { "char": "う" }, { "char": "え" }, { "char": "お" },
+        { "char": "ア" }, { "char": "イ" }, { "char": "ウ" }, { "char": "エ" }, { "char": "オ" }
+      ]
+    },
+    {
+      "phonetic": "k",
+      "characters": [
+        { "char": "か" }, { "char": "き" }, { "char": "く" }, { "char": "け" }, { "char": "こ" },
+        { "char": "カ" }, { "char": "キ" }, { "char": "ク" }, { "char": "ケ" }, { "char": "コ" }
+      ]
+    },
+    {
+      "phonetic": "s",
+      "characters": [
+        { "char": "さ" }, { "char": "し" }, { "char": "す" }, { "char": "せ" }, { "char": "そ" },
+        { "char": "サ" }, { "char": "シ" }, { "char": "ス" }, { "char": "セ" }, { "char": "ソ" }
+      ]
+    },
+    {
+      "phonetic": "t",
+      "characters": [
+        { "char": "た" }, { "char": "ち" }, { "char": "つ" }, { "char": "て" }, { "char": "と" },
+        { "char": "タ" }, { "char": "チ" }, { "char": "ツ" }, { "char": "テ" }, { "char": "ト" }
+      ]
+    },
+    {
+      "phonetic": "n",
+      "characters": [
+        { "char": "な" }, { "char": "に" }, { "char": "ぬ" }, { "char": "ね" }, { "char": "の" },
+        { "char": "ナ" }, { "char": "ニ" }, { "char": "ヌ" }, { "char": "ネ" }, { "char": "ノ" }
+      ]
+    },
+    {
+      "phonetic": "h",
+      "characters": [
+        { "char": "は" }, { "char": "ひ" }, { "char": "ふ" }, { "char": "へ" }, { "char": "ほ" },
+        { "char": "ハ" }, { "char": "ヒ" }, { "char": "フ" }, { "char": "ヘ" }, { "char": "ホ" }
+      ]
+    },
+    {
+      "phonetic": "m",
+      "characters": [
+        { "char": "ま" }, { "char": "み" }, { "char": "む" }, { "char": "め" }, { "char": "も" },
+        { "char": "マ" }, { "char": "ミ" }, { "char": "ム" }, { "char": "メ" }, { "char": "モ" }
+      ]
+    },
+    {
+      "phonetic": "y",
+      "characters": [
+        { "char": "や" }, { "char": "" }, { "char": "ゆ" }, { "char": "" }, { "char": "よ" },
+        { "char": "ヤ" }, { "char": "" }, { "char": "ユ" }, { "char": "" }, { "char": "ヨ" }
+      ]
+    },
+    {
+      "phonetic": "r",
+      "characters": [
+        { "char": "ら" }, { "char": "り" }, { "char": "る" }, { "char": "れ" }, { "char": "ろ" },
+        { "char": "ラ" }, { "char": "リ" }, { "char": "ル" }, { "char": "レ" }, { "char": "ロ" }
+      ]
+    },
+    {
+      "phonetic": "w / n",
+      "characters": [
+        { "char": "わ" }, { "char": "" }, { "char": "" }, { "char": "" }, { "char": "を" },
+        { "char": "ワ" }, { "char": "" }, { "char": "" }, { "char": "" }, { "char": "ヲ" }
+      ]
+    },
+    {
+      "phonetic": "撥音",
+      "characters": [
+        { "char": "ん" }, { "char": "" }, { "char": "" }, { "char": "" }, { "char": "" },
+        { "char": "ン" }, { "char": "" }, { "char": "" }, { "char": "" }, { "char": "" }
+      ]
+    },
+    {
+      "phonetic": "g (濁音)",
+      "characters": [
+        { "char": "が" }, { "char": "ぎ" }, { "char": "ぐ" }, { "char": "げ" }, { "char": "ご" },
+        { "char": "ガ" }, { "char": "ギ" }, { "char": "グ" }, { "char": "ゲ" }, { "char": "ゴ" }
+      ]
+    },
+    {
+      "phonetic": "z (濁音)",
+      "characters": [
+        { "char": "ざ" }, { "char": "じ" }, { "char": "ず" }, { "char": "ぜ" }, { "char": "ぞ" },
+        { "char": "ザ" }, { "char": "ジ" }, { "char": "ズ" }, { "char": "ゼ" }, { "char": "ゾ" }
+      ]
+    },
+    {
+      "phonetic": "d (濁音)",
+      "characters": [
+        { "char": "だ" }, { "char": "ぢ" }, { "char": "づ" }, { "char": "で" }, { "char": "ど" },
+        { "char": "ダ" }, { "char": "ヂ" }, { "char": "ヅ" }, { "char": "デ" }, { "char": "ド" }
+      ]
+    },
+    {
+      "phonetic": "b (濁音)",
+      "characters": [
+        { "char": "ば" }, { "char": "び" }, { "char": "ぶ" }, { "char": "べ" }, { "char": "ぼ" },
+        { "char": "バ" }, { "char": "ビ" }, { "char": "ブ" }, { "char": "ベ" }, { "char": "ボ" }
+      ]
+    },
+    {
+      "phonetic": "p (半濁音)",
+      "characters": [
+        { "char": "ぱ" }, { "char": "ぴ" }, { "char": "ぷ" }, { "char": "ぺ" }, { "char": "ぽ" },
+        { "char": "パ" }, { "char": "ピ" }, { "char": "プ" }, { "char": "ペ" }, { "char": "ポ" }
+      ]
+    }
+  ]
+}
