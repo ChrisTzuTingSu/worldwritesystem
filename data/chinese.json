@@ -1,0 +1,82 @@
+{
+  "title": "語素文字 (漢字)",
+  "description": "全球歷史最悠久且持續使用的語素文字系統。每個字元同時具備表音與表意功能。以下依據圖表擷取基礎語彙，並以繁體中文呈現。",
+  "headers": [
+    { "name": "類別特徵" },
+    { "name": "字元一", "langCode": "zh-TW" },
+    { "name": "字元二", "langCode": "zh-TW" },
+    { "name": "字元三", "langCode": "zh-TW" },
+    { "name": "字元四", "langCode": "zh-TW" },
+    { "name": "字元五", "langCode": "zh-TW" },
+    { "name": "字元六", "langCode": "zh-TW" },
+    { "name": "字元七", "langCode": "zh-TW" },
+    { "name": "字元八", "langCode": "zh-TW" },
+    { "name": "字元九", "langCode": "zh-TW" },
+    { "name": "字元十", "langCode": "zh-TW" }
+  ],
+  "rows": [
+    {
+      "phonetic": "數量與對比",
+      "characters": [
+        { "char": "大" }, { "char": "小" }, { "char": "一" }, { "char": "二" }, { "char": "三" },
+        { "char": "十" }, { "char": "百" }, { "char": "千" }, { "char": "多" }, { "char": "少" }
+      ]
+    },
+    {
+      "phonetic": "人物與代名詞",
+      "characters": [
+        { "char": "人" }, { "char": "夫" }, { "char": "子" }, { "char": "男" }, { "char": "女" },
+        { "char": "王" }, { "char": "主" }, { "char": "我" }, { "char": "你" }, { "char": "他" }
+      ]
+    },
+    {
+      "phonetic": "器官與動作",
+      "characters": [
+        { "char": "口" }, { "char": "說" }, { "char": "目" }, { "char": "見" }, { "char": "耳" },
+        { "char": "聞" }, { "char": "手" }, { "char": "工" }, { "char": "腳" }, { "char": "行" }
+      ]
+    },
+    {
+      "phonetic": "方位與動態",
+      "characters": [
+        { "char": "來" }, { "char": "入" }, { "char": "出" }, { "char": "上" }, { "char": "下" },
+        { "char": "中" }, { "char": "在" }, { "char": "左" }, { "char": "右" }, { "char": "有" }
+      ]
+    },
+    {
+      "phonetic": "場所與動物",
+      "characters": [
+        { "char": "家" }, { "char": "校" }, { "char": "文" }, { "char": "字" }, { "char": "學" },
+        { "char": "狗" }, { "char": "貓" }, { "char": "馬" }, { "char": "鳥" }, { "char": "蟲" }
+      ]
+    },
+    {
+      "phonetic": "自然元素",
+      "characters": [
+        { "char": "日" }, { "char": "月" }, { "char": "天" }, { "char": "地" }, { "char": "海" },
+        { "char": "水" }, { "char": "火" }, { "char": "土" }, { "char": "金" }, { "char": "木" }
+      ]
+    },
+    {
+      "phonetic": "氣象與植物",
+      "characters": [
+        { "char": "氣" }, { "char": "雨" }, { "char": "山" }, { "char": "川" }, { "char": "冰" },
+        { "char": "田" }, { "char": "花" }, { "char": "石" }, { "char": "草" }, { "char": "樹" }
+      ]
+    },
+    {
+      "phonetic": "民生與色彩",
+      "characters": [
+        { "char": "村" }, { "char": "店" }, { "char": "車" }, { "char": "衣" }, { "char": "白" },
+        { "char": "黑" }, { "char": "紅" }, { "char": "藍" }, { "char": "綠" }, { "char": "黃" }
+      ]
+    },
+    {
+      "phonetic": "抽象與狀態",
+      "characters": [
+        { "char": "是" }, { "char": "心" }, { "char": "好" }, { "char": "愛" }, { "char": "喜" },
+        { "char": "幸" }, { "char": "生" }, { "char": "死" }, { "char": "力" }, { "char": "病" }
+      ]
+    }
+  ]
+}
