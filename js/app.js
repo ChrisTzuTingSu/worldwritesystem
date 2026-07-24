@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         
                         layer.on('click', function () {
-                            const countryCode = feature.properties.ISO_A2; 
+                            const countryCode = feature.properties.ISO_a2; 
                             openLangDetail(countryCode);
                         });
                     }
