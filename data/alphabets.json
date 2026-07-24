@@ -1,0 +1,159 @@
+{
+  "title": "全音素文字 (Alphabets)",
+  "description": "源自古希臘字母。古希臘人首度將腓尼基系統中的部分輔音字母改造為母音符號，建立了人類歷史上首個同時具備獨立輔音與母音的全音素書寫系統，並成為後世歐洲各主要拼音文字的共同基石。",
+  "headers": [
+    { "name": "發音對應" },
+    { "name": "古希臘文", "langCode": "" },
+    { "name": "古拉丁文", "langCode": "" },
+    { "name": "羅馬拉丁文", "langCode": "" },
+    { "name": "盎格魯撒克遜盧恩文", "langCode": "" },
+    { "name": "古英文 (島嶼體)", "langCode": "" },
+    { "name": "現代英文", "langCode": "en-US" },
+    { "name": "現代希臘文", "langCode": "el-GR" },
+    { "name": "俄文 (西里爾)", "langCode": "ru-RU" },
+    { "name": "亞美尼亞文", "langCode": "hy-AM" },
+    { "name": "喬治亞文", "langCode": "ka-GE" }
+  ],
+  "rows": [
+    {
+      "phonetic": "a (alpha)",
+      "characters": [
+        { "char": "𐌀" }, { "char": "𐌀" }, { "char": "A" }, { "char": "ᚫ" }, { "char": "æ" },
+        { "char": "Aa" }, { "char": "Αα" }, { "char": "Аа" }, { "char": "Աա" }, { "char": "ა" }
+      ]
+    },
+    {
+      "phonetic": "b / v (beta)",
+      "characters": [
+        { "char": "𐌁" }, { "char": "𐌁" }, { "char": "B" }, { "char": "ᛒ" }, { "char": "b" },
+        { "char": "Bb" }, { "char": "Ββ" }, { "char": "Бб" }, { "char": "Բբ" }, { "char": "ბ" }
+      ]
+    },
+    {
+      "phonetic": "g (gamma)",
+      "characters": [
+        { "char": "𐌂" }, { "char": "C" }, { "char": "G" }, { "char": "ᚷ" }, { "char": "g" },
+        { "char": "Gg" }, { "char": "Γγ" }, { "char": "Гг" }, { "char": "Գգ" }, { "char": "გ" }
+      ]
+    },
+    {
+      "phonetic": "d (delta)",
+      "characters": [
+        { "char": "𐌃" }, { "char": "D" }, { "char": "D" }, { "char": "ᛞ" }, { "char": "d" },
+        { "char": "Dd" }, { "char": "Δδ" }, { "char": "Дд" }, { "char": "Դդ" }, { "char": "დ" }
+      ]
+    },
+    {
+      "phonetic": "e (epsilon)",
+      "characters": [
+        { "char": "𐌄" }, { "char": "E" }, { "char": "E" }, { "char": "ᛖ" }, { "char": "e" },
+        { "char": "Ee" }, { "char": "Εε" }, { "char": "Ее" }, { "char": "Եե" }, { "char": "ე" }
+      ]
+    },
+    {
+      "phonetic": "w / f (digamma)",
+      "characters": [
+        { "char": "𐌅" }, { "char": "F" }, { "char": "F" }, { "char": "ᚠ" }, { "char": "f" },
+        { "char": "Ff" }, { "char": "" }, { "char": "" }, { "char": "Ււ" }, { "char": "ვ" }
+      ]
+    },
+    {
+      "phonetic": "z (zeta)",
+      "characters": [
+        { "char": "𐌆" }, { "char": "I" }, { "char": "Z" }, { "char": "" }, { "char": "z" },
+        { "char": "Zz" }, { "char": "Ζζ" }, { "char": "Зз" }, { "char": "Զզ" }, { "char": "ზ" }
+      ]
+    },
+    {
+      "phonetic": "h (eta)",
+      "characters": [
+        { "char": "𐌇" }, { "char": "H" }, { "char": "H" }, { "char": "ᚻ" }, { "char": "h" },
+        { "char": "Hh" }, { "char": "Ηη" }, { "char": "Ии" }, { "char": "Հհ" }, { "char": "ჱ" }
+      ]
+    },
+    {
+      "phonetic": "th (theta)",
+      "characters": [
+        { "char": "𐌈" }, { "char": "" }, { "char": "" }, { "char": "ᚦ" }, { "char": "þ" },
+        { "char": "" }, { "char": "Θθ" }, { "char": "Ѳѳ" }, { "char": "Թթ" }, { "char": "თ" }
+      ]
+    },
+    {
+      "phonetic": "i / j (iota)",
+      "characters": [
+        { "char": "𐌉" }, { "char": "I" }, { "char": "I" }, { "char": "ᛁ" }, { "char": "i" },
+        { "char": "Ii" }, { "char": "Ιι" }, { "char": "Іі" }, { "char": "Իի" }, { "char": "ი" }
+      ]
+    },
+    {
+      "phonetic": "k (kappa)",
+      "characters": [
+        { "char": "𐌊" }, { "char": "K" }, { "char": "K" }, { "char": "ᚳ" }, { "char": "c" },
+        { "char": "Kk" }, { "char": "Κκ" }, { "char": "Кк" }, { "char": "Կկ" }, { "char": "კ" }
+      ]
+    },
+    {
+      "phonetic": "l (lambda)",
+      "characters": [
+        { "char": "𐌋" }, { "char": "L" }, { "char": "L" }, { "char": "ᛚ" }, { "char": "l" },
+        { "char": "Ll" }, { "char": "Λλ" }, { "char": "Лл" }, { "char": "Լլ" }, { "char": "ლ" }
+      ]
+    },
+    {
+      "phonetic": "m (mu)",
+      "characters": [
+        { "char": "𐌌" }, { "char": "M" }, { "char": "M" }, { "char": "ᛗ" }, { "char": "m" },
+        { "char": "Mm" }, { "char": "Μμ" }, { "char": "Мм" }, { "char": "Մմ" }, { "char": "მ" }
+      ]
+    },
+    {
+      "phonetic": "n (nu)",
+      "characters": [
+        { "char": "𐌍" }, { "char": "N" }, { "char": "N" }, { "char": "ᚾ" }, { "char": "n" },
+        { "char": "Nn" }, { "char": "Νν" }, { "char": "Нн" }, { "char": "Նն" }, { "char": "ნ" }
+      ]
+    },
+    {
+      "phonetic": "x (xi)",
+      "characters": [
+        { "char": "𐌎" }, { "char": "X" }, { "char": "X" }, { "char": "ᛉ" }, { "char": "x" },
+        { "char": "Xx" }, { "char": "Ξξ" }, { "char": "Ѯѯ" }, { "char": "" }, { "char": "ჲ" }
+      ]
+    },
+    {
+      "phonetic": "o (omicron)",
+      "characters": [
+        { "char": "𐌏" }, { "char": "O" }, { "char": "O" }, { "char": "ᚩ" }, { "char": "o" },
+        { "char": "Oo" }, { "char": "Οο" }, { "char": "Оо" }, { "char": "Ոո" }, { "char": "ო" }
+      ]
+    },
+    {
+      "phonetic": "p (pi)",
+      "characters": [
+        { "char": "𐌐" }, { "char": "P" }, { "char": "P" }, { "char": "ᛈ" }, { "char": "p" },
+        { "char": "Pp" }, { "char": "Ππ" }, { "char": "Пп" }, { "char": "Պպ" }, { "char": "პ" }
+      ]
+    },
+    {
+      "phonetic": "r (rho)",
+      "characters": [
+        { "char": "𐌓" }, { "char": "R" }, { "char": "R" }, { "char": "ᚱ" }, { "char": "r" },
+        { "char": "Rr" }, { "char": "Ρρ" }, { "char": "Рр" }, { "char": "Ռռ" }, { "char": "რ" }
+      ]
+    },
+    {
+      "phonetic": "s (sigma)",
+      "characters": [
+        { "char": "𐌔" }, { "char": "S" }, { "char": "S" }, { "char": "ᛋ" }, { "char": "s" },
+        { "char": "Ss" }, { "char": "Σσς" }, { "char": "Сс" }, { "char": "Սս" }, { "char": "ს" }
+      ]
+    },
+    {
+      "phonetic": "t (tau)",
+      "characters": [
+        { "char": "𐌕" }, { "char": "T" }, { "char": "T" }, { "char": "ᛏ" }, { "char": "t" },
+        { "char": "Tt" }, { "char": "Ττ" }, { "char": "Тт" }, { "char": "Տտ" }, { "char": "ტ" }
+      ]
+    }
+  ]
+}
