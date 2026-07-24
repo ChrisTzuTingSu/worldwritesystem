@@ -13,19 +13,24 @@
             <button data-target="alphabets">全音素文字 (Alphabets)</button>
             <button data-target="abjads">輔音音素文字 (Abjads)</button>
             <button data-target="abugidas">元音附標文字 (Abugidas)</button>
-            <button data-target="east_asian">漢字衍生與特徵文字 (日/韓)</button>
+            <button data-target="chinese">語素文字 (漢字)</button>
+            <button data-target="japanese">音節文字 (日文)</button>
+            <button data-target="korean">特徵文字 (韓文)</button>
         </nav>
     </header>
 
     <main>
-        <section id="description-container">
-            <!-- 系統演化說明將動態載入於此 -->
-        </section>
-        
-        <section id="table-container">
-            <!-- 完整演化資料表將動態載入於此 -->
-        </section>
+        <section id="description-container"></section>
+        <section id="table-container"></section>
     </main>
+
+    <!-- 語言專屬介紹彈出視窗 -->
+    <div id="detail-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-modal" class="close-btn">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
     <script src="js/app.js"></script>
 </body>
