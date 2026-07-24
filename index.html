@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全球書寫系統演化圖鑑</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -16,15 +18,25 @@
             <button data-target="chinese">語素文字 (漢字)</button>
             <button data-target="japanese">音節文字 (日文)</button>
             <button data-target="korean">特徵文字 (韓文)</button>
+            <button data-target="map_view" id="map-btn">世界語言地圖 (Map)</button>
         </nav>
     </header>
 
     <main>
-        <section id="description-container"></section>
-        <section id="table-container"></section>
+        <div id="tabular-view">
+            <section id="description-container"></section>
+            <section id="table-container"></section>
+        </div>
+
+        <div id="map-view" class="hidden">
+            <section id="map-description">
+                <h2>世界語言分佈與書寫系統</h2>
+                <p>請點選地圖上的國家板塊，檢視該國主要使用之語言與文字系統詳細資料。</p>
+            </section>
+            <div id="map-container"></div>
+        </div>
     </main>
 
-    <!-- 語言專屬介紹彈出視窗 -->
     <div id="detail-modal" class="modal hidden">
         <div class="modal-content">
             <span id="close-modal" class="close-btn">&times;</span>
