@@ -1,0 +1,98 @@
+{
+  "title": "漢字衍生與特徵文字 (日/韓)",
+  "description": "東亞文字體系的核心源自漢字。西元九世紀起，日本擷取漢字的草書體創制平假名，並擷取漢字偏旁創制片假名，形成音節文字。十五世紀，朝鮮世宗大王主導創制諺文，依據發音器官形狀設計字母，並採方塊字型態組合，為人類歷史上特徵文字的典範。",
+  "headers": [
+    { "name": "發音對應" },
+    { "name": "漢字 (草書字源)", "langCode": "zh-TW" },
+    { "name": "平假名", "langCode": "ja-JP" },
+    { "name": "漢字 (偏旁字源)", "langCode": "zh-TW" },
+    { "name": "片假名", "langCode": "ja-JP" },
+    { "name": "諺文", "langCode": "ko-KR" }
+  ],
+  "rows": [
+    {
+      "phonetic": "a",
+      "characters": [
+        { "char": "安" }, { "char": "あ" }, { "char": "阿" }, { "char": "ア" }, { "char": "아" }
+      ]
+    },
+    {
+      "phonetic": "i",
+      "characters": [
+        { "char": "以" }, { "char": "い" }, { "char": "伊" }, { "char": "イ" }, { "char": "이" }
+      ]
+    },
+    {
+      "phonetic": "u",
+      "characters": [
+        { "char": "宇" }, { "char": "う" }, { "char": "宇" }, { "char": "ウ" }, { "char": "우" }
+      ]
+    },
+    {
+      "phonetic": "e",
+      "characters": [
+        { "char": "衣" }, { "char": "え" }, { "char": "江" }, { "char": "エ" }, { "char": "에" }
+      ]
+    },
+    {
+      "phonetic": "o",
+      "characters": [
+        { "char": "於" }, { "char": "お" }, { "char": "乎" }, { "char": "オ" }, { "char": "오" }
+      ]
+    },
+    {
+      "phonetic": "ka",
+      "characters": [
+        { "char": "加" }, { "char": "か" }, { "char": "加" }, { "char": "カ" }, { "char": "가" }
+      ]
+    },
+    {
+      "phonetic": "ki",
+      "characters": [
+        { "char": "幾" }, { "char": "き" }, { "char": "幾" }, { "char": "キ" }, { "char": "기" }
+      ]
+    },
+    {
+      "phonetic": "ku",
+      "characters": [
+        { "char": "久" }, { "char": "く" }, { "char": "久" }, { "char": "ク" }, { "char": "구" }
+      ]
+    },
+    {
+      "phonetic": "ke",
+      "characters": [
+        { "char": "計" }, { "char": "け" }, { "char": "介" }, { "char": "ケ" }, { "char": "게" }
+      ]
+    },
+    {
+      "phonetic": "ko",
+      "characters": [
+        { "char": "己" }, { "char": "こ" }, { "char": "己" }, { "char": "コ" }, { "char": "고" }
+      ]
+    },
+    {
+      "phonetic": "sa",
+      "characters": [
+        { "char": "左" }, { "char": "さ" }, { "char": "散" }, { "char": "サ" }, { "char": "사" }
+      ]
+    },
+    {
+      "phonetic": "ta",
+      "characters": [
+        { "char": "太" }, { "char": "た" }, { "char": "多" }, { "char": "タ" }, { "char": "타" }
+      ]
+    },
+    {
+      "phonetic": "na",
+      "characters": [
+        { "char": "奈" }, { "char": "な" }, { "char": "奈" }, { "char": "ナ" }, { "char": "나" }
+      ]
+    },
+    {
+      "phonetic": "ma",
+      "characters": [
+        { "char": "末" }, { "char": "ま" }, { "char": "萬" }, { "char": "マ" }, { "char": "마" }
+      ]
+    }
+  ]
+}
