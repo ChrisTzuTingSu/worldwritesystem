@@ -27,9 +27,13 @@ header {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
+    overflow-x: auto; /* 新增：允許水平滑動 */
+    white-space: nowrap; /* 新增：強制子元素不換行 */
+    padding-bottom: 0.5rem; /* 新增：預留捲軸空間，避免截斷文字 */
 }
 
 #system-nav button {
+    flex-shrink: 0; /* 新增：防止按鈕在空間不足時被壓縮 */
     padding: 0.5rem 1rem;
     border: 1px solid var(--primary-color);
     background: transparent;
@@ -38,6 +42,7 @@ header {
     border-radius: 4px;
     font-size: 1rem;
 }
+
 
 #system-nav button.active {
     background: var(--primary-color);
