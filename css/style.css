@@ -1,0 +1,94 @@
+:root {
+    --primary-color: #2c3e50;
+    --bg-color: #f8f9fa;
+    --border-color: #dee2e6;
+    --hover-color: #e9ecef;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--primary-color);
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #fff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+#system-nav {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#system-nav button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#system-nav button.active {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+main {
+    padding: 2rem;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+#description-container {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #fff;
+    border-left: 4px solid var(--primary-color);
+}
+
+.evolution-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.evolution-table th, 
+.evolution-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.evolution-table th {
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: normal;
+    position: sticky;
+    top: 110px;
+}
+
+.char-cell {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.char-cell:hover {
+    background-color: var(--hover-color);
+}
+
+.char-empty {
+    background-color: #f1f3f5;
+}
