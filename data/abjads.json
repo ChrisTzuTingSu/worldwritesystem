@@ -1,0 +1,171 @@
+{
+  "title": "輔音音素文字 (Abjads)",
+  "description": "以閃米特語系為核心發展的書寫系統，字符主要標示輔音。源自前腓尼基時期的原始西奈字母，隨後經由腓尼基字母向外擴張，成為中東地區希伯來文與阿拉伯文的共同祖先。",
+  "headers": [
+    { "name": "發音對應" },
+    { "name": "埃及聖書體", "langCode": "" },
+    { "name": "原始西奈字母", "langCode": "" },
+    { "name": "烏加里特楔形文字", "langCode": "" },
+    { "name": "腓尼基字母", "langCode": "" },
+    { "name": "帝國亞蘭文", "langCode": "" },
+    { "name": "現代希伯來文", "langCode": "he-IL" },
+    { "name": "敘利亞文", "langCode": "syr" },
+    { "name": "現代阿拉伯文", "langCode": "ar-SA" }
+  ],
+  "rows": [
+    {
+      "phonetic": "ʔ 聲門塞音 (alef)",
+      "characters": [
+        { "char": "𓃾" }, { "char": "𐤀" }, { "char": "𐎀" }, { "char": "𐤀" },
+        { "char": "𐡀" }, { "char": "א" }, { "char": "ܐ" }, { "char": "ا" }
+      ]
+    },
+    {
+      "phonetic": "b / v (bet)",
+      "characters": [
+        { "char": "𓃀" }, { "char": "𐤁" }, { "char": "𐎁" }, { "char": "𐤁" },
+        { "char": "𐡁" }, { "char": "ב" }, { "char": "ܒ" }, { "char": "ب" }
+      ]
+    },
+    {
+      "phonetic": "g (gimel)",
+      "characters": [
+        { "char": "𓎼" }, { "char": "𐤂" }, { "char": "𐎂" }, { "char": "𐤂" },
+        { "char": "𐡂" }, { "char": "ג" }, { "char": "ܓ" }, { "char": "ج" }
+      ]
+    },
+    {
+      "phonetic": "d (dalet)",
+      "characters": [
+        { "char": "𓂧" }, { "char": "𐤃" }, { "char": "𐎄" }, { "char": "𐤃" },
+        { "char": "𐡃" }, { "char": "ד" }, { "char": "ܕ" }, { "char": "د" }
+      ]
+    },
+    {
+      "phonetic": "h (he)",
+      "characters": [
+        { "char": "𓉡" }, { "char": "𐤄" }, { "char": "𐎅" }, { "char": "𐤄" },
+        { "char": "𐡄" }, { "char": "ה" }, { "char": "ܗ" }, { "char": "ه" }
+      ]
+    },
+    {
+      "phonetic": "w (waw)",
+      "characters": [
+        { "char": "𓏲" }, { "char": "𐤅" }, { "char": "𐎆" }, { "char": "𐤅" },
+        { "char": "𐡅" }, { "char": "ו" }, { "char": "ܘ" }, { "char": "و" }
+      ]
+    },
+    {
+      "phonetic": "z (zayin)",
+      "characters": [
+        { "char": "𓏭" }, { "char": "𐤆" }, { "char": "𐎇" }, { "char": "𐤆" },
+        { "char": "𐡆" }, { "char": "ז" }, { "char": "ܙ" }, { "char": "ز" }
+      ]
+    },
+    {
+      "phonetic": "ḥ 咽音 (het)",
+      "characters": [
+        { "char": "𓉔" }, { "char": "𐤇" }, { "char": "𐎈" }, { "char": "𐤇" },
+        { "char": "𐡇" }, { "char": "ח" }, { "char": "ܚ" }, { "char": "ح" }
+      ]
+    },
+    {
+      "phonetic": "ṭ 咽化音 (tet)",
+      "characters": [
+        { "char": "𓄤" }, { "char": "𐤈" }, { "char": "𐎉" }, { "char": "𐤈" },
+        { "char": "𐡈" }, { "char": "ט" }, { "char": "ܛ" }, { "char": "ط" }
+      ]
+    },
+    {
+      "phonetic": "y (yod)",
+      "characters": [
+        { "char": "𓂝" }, { "char": "𐤉" }, { "char": "𐎊" }, { "char": "𐤉" },
+        { "char": "𐡉" }, { "char": "י" }, { "char": "ܝ" }, { "char": "ي" }
+      ]
+    },
+    {
+      "phonetic": "k (kaf)",
+      "characters": [
+        { "char": "𓂧" }, { "char": "𐤊" }, { "char": "𐎋" }, { "char": "𐤊" },
+        { "char": "𐡊" }, { "char": "כ" }, { "char": "ܟ" }, { "char": "ك" }
+      ]
+    },
+    {
+      "phonetic": "l (lamed)",
+      "characters": [
+        { "char": "𓌃" }, { "char": "𐤋" }, { "char": "𐎍" }, { "char": "𐤋" },
+        { "char": "𐡋" }, { "char": "ל" }, { "char": "ܠ" }, { "char": "ل" }
+      ]
+    },
+    {
+      "phonetic": "m (mem)",
+      "characters": [
+        { "char": "𓈖" }, { "char": "𐤌" }, { "char": "𐎎" }, { "char": "𐤌" },
+        { "char": "𐡌" }, { "char": "מ" }, { "char": "ܡ" }, { "char": "م" }
+      ]
+    },
+    {
+      "phonetic": "n (nun)",
+      "characters": [
+        { "char": "𓆓" }, { "char": "𐤍" }, { "char": "𐎐" }, { "char": "𐤍" },
+        { "char": "𐡍" }, { "char": "נ" }, { "char": "ܢ" }, { "char": "ن" }
+      ]
+    },
+    {
+      "phonetic": "s (samekh)",
+      "characters": [
+        { "char": "𓊽" }, { "char": "𐤎" }, { "char": "𐎒" }, { "char": "𐤎" },
+        { "char": "𐡎" }, { "char": "ס" }, { "char": "ܣ" }, { "char": "س" }
+      ]
+    },
+    {
+      "phonetic": "ʕ 咽音 (ayin)",
+      "characters": [
+        { "char": "𓁹" }, { "char": "𐤏" }, { "char": "𐎓" }, { "char": "𐤏" },
+        { "char": "𐡏" }, { "char": "ע" }, { "char": "ܥ" }, { "char": "ع" }
+      ]
+    },
+    {
+      "phonetic": "p / f (pe)",
+      "characters": [
+        { "char": "𓂋" }, { "char": "𐤐" }, { "char": "𐎔" }, { "char": "𐤐" },
+        { "char": "𐡐" }, { "char": "פ" }, { "char": "ܦ" }, { "char": "ف" }
+      ]
+    },
+    {
+      "phonetic": "ṣ 咽化音 (tsadi)",
+      "characters": [
+        { "char": "𓇑" }, { "char": "𐤑" }, { "char": "𐎕" }, { "char": "𐤑" },
+        { "char": "𐡑" }, { "char": "צ" }, { "char": "ܨ" }, { "char": "ص" }
+      ]
+    },
+    {
+      "phonetic": "q 小舌音 (qof)",
+      "characters": [
+        { "char": "𓃹" }, { "char": "𐤒" }, { "char": "𐎖" }, { "char": "𐤒" },
+        { "char": "𐡒" }, { "char": "ק" }, { "char": "ܩ" }, { "char": "ق" }
+      ]
+    },
+    {
+      "phonetic": "r (resh)",
+      "characters": [
+        { "char": "𓁶" }, { "char": "𐤓" }, { "char": "𐎗" }, { "char": "𐤓" },
+        { "char": "𐡓" }, { "char": "ר" }, { "char": "ܪ" }, { "char": "ر" }
+      ]
+    },
+    {
+      "phonetic": "š (shin)",
+      "characters": [
+        { "char": "𓌒" }, { "char": "𐤔" }, { "char": "𐎌" }, { "char": "𐤔" },
+        { "char": "𐡔" }, { "char": "ש" }, { "char": "ܫ" }, { "char": "ش" }
+      ]
+    },
+    {
+      "phonetic": "t (taw)",
+      "characters": [
+        { "char": "𓏴" }, { "char": "𐤕" }, { "char": "𐎚" }, { "char": "𐤕" },
+        { "char": "𐡕" }, { "char": "ת" }, { "char": "ܬ" }, { "char": "ت" }
+      ]
+    }
+  ]
+}
