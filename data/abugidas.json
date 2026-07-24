@@ -1,4 +1,7 @@
-  "headers": [
+{
+  "title": "元音附標文字 (Abugidas)",
+  "description": "源自古印度的婆羅米文。此系統基於嚴密的發音部位與發音方法矩陣排列，每個輔音字母皆預設帶有基礎母音。系統隨宗教與貿易向南亞及東南亞擴散，演化出高度多樣的字體，但其底層的語音學架構仍維持一致。",
+    "headers": [
     { "name": "發音對應" },
     { "name": "婆羅米文", "langCode": "" },
     { "name": "印地文", "langCode": "hi-IN" },
@@ -18,3 +21,63 @@
     { "name": "高棉文", "langCode": "km-KH" },
     { "name": "阿姆哈拉文", "langCode": "am-ET" }
   ]
+,
+  "rows": [
+    {
+      "phonetic": "a",
+      "characters": [ { "char": "𑀅" }, { "char": "अ" }, { "char": "અ" }, { "char": "ਅ" }, { "char": "অ" }, { "char": "ཨ" }, { "char": "ଅ" }, { "char": "ಅ" }, { "char": "అ" }, { "char": "அ" }, { "char": "അ" }, { "char": "අ" }, { "char": "အ" }, { "char": "อ" }, { "char": "ອ" }, { "char": "អ" }, { "char": "U" } ]
+    },
+    {
+      "phonetic": "i",
+      "characters": [ { "char": "𑀇" }, { "char": "इ" }, { "char": "ઇ" }, { "char": "ਇ" }, { "char": "ই" }, { "char": "ཨི" }, { "char": "ଇ" }, { "char": "ಇ" }, { "char": "ఇ" }, { "char": "இ" }, { "char": "ഇ" }, { "char": "ඉ" }, { "char": "ဣ" }, { "char": "อิ" }, { "char": "ອິ" }, { "char": "ឥ" }, { "char": "ሐ" } ]
+    },
+    {
+      "phonetic": "u",
+      "characters": [ { "char": "𑀉" }, { "char": "उ" }, { "char": "ઉ" }, { "char": "ਉ" }, { "char": "উ" }, { "char": "ཨུ" }, { "char": "ଉ" }, { "char": "ಉ" }, { "char": "ఉ" }, { "char": "உ" }, { "char": "ഉ" }, { "char": "උ" }, { "char": "ဥ" }, { "char": "อุ" }, { "char": "ອຸ" }, { "char": "ឧ" }, { "char": "ሠ" } ]
+    },
+    {
+      "phonetic": "e",
+      "characters": [ { "char": "𑀏" }, { "char": "ए" }, { "char": "એ" }, { "char": "ਏ" }, { "char": "এ" }, { "char": "ཨེ" }, { "char": "ଏ" }, { "char": "ಏ" }, { "char": "ఏ" }, { "char": "ஏ" }, { "char": "ഏ" }, { "char": "ඒ" }, { "char": "ဧ" }, { "char": "เอ" }, { "char": "ເອ" }, { "char": "ឯ" }, { "char": "ሸ" } ]
+    },
+    {
+      "phonetic": "o",
+      "characters": [ { "char": "𑀑" }, { "char": "ओ" }, { "char": "ઓ" }, { "char": "ਓ" }, { "char": "ও" }, { "char": "ཨོ" }, { "char": "ଓ" }, { "char": "ಓ" }, { "char": "ఓ" }, { "char": "ஓ" }, { "char": "ഓ" }, { "char": "ඕ" }, { "char": "ဩ" }, { "char": "โอ" }, { "char": "ໂອ" }, { "char": "ឲ" }, { "char": "ተ" } ]
+    },
+    {
+      "phonetic": "ka (軟顎音)",
+      "characters": [ { "char": "𑀓" }, { "char": "क" }, { "char": "ક" }, { "char": "ਕ" }, { "char": "ক" }, { "char": "ཀ" }, { "char": "କ" }, { "char": "ಕ" }, { "char": "క" }, { "char": "க" }, { "char": "ക" }, { "char": "ක" }, { "char": "က" }, { "char": "ก" }, { "char": "ກ" }, { "char": "ក" }, { "char": "ኸ" } ]
+    },
+    {
+      "phonetic": "kha",
+      "characters": [ { "char": "𑀔" }, { "char": "ख" }, { "char": "ખ" }, { "char": "ਖ" }, { "char": "খ" }, { "char": "ཁ" }, { "char": "ଖ" }, { "char": "ಖ" }, { "char": "ఖ" }, { "char": "" }, { "char": "ഖ" }, { "char": "ඛ" }, { "char": "ခ" }, { "char": "ข" }, { "char": "ຂ" }, { "char": "ខ" }, { "char": "አ" } ]
+    },
+    {
+      "phonetic": "ga",
+      "characters": [ { "char": "𑀕" }, { "char": "ग" }, { "char": "ગ" }, { "char": "ਗ" }, { "char": "গ" }, { "char": "ག" }, { "char": "ଗ" }, { "char": "ಗ" }, { "char": "గ" }, { "char": "" }, { "char": "ഗ" }, { "char": "ග" }, { "char": "ဂ" }, { "char": "ค" }, { "char": "ຄ" }, { "char": "គ" }, { "char": "ከ" } ]
+    },
+    {
+      "phonetic": "ca (硬顎音)",
+      "characters": [ { "char": "𑀘" }, { "char": "च" }, { "char": "ચ" }, { "char": "ਚ" }, { "char": "চ" }, { "char": "ཅ" }, { "char": "ଚ" }, { "char": "ಚ" }, { "char": "చ" }, { "char": "ச" }, { "char": "ച" }, { "char": "ච" }, { "char": "စ" }, { "char": "จ" }, { "char": "ຈ" }, { "char": "ច" }, { "char": "ዘ" } ]
+    },
+    {
+      "phonetic": "ta (齒音)",
+      "characters": [ { "char": "𑀢" }, { "char": "त" }, { "char": "ત" }, { "char": "ਤ" }, { "char": "ত" }, { "char": "ཏ" }, { "char": "ତ" }, { "char": "ತ" }, { "char": "త" }, { "char": "த" }, { "char": "ത" }, { "char": "ත" }, { "char": "တ" }, { "char": "ต" }, { "char": "ຕ" }, { "char": "ត" }, { "char": "ፈ" } ]
+    },
+    {
+      "phonetic": "pa (雙唇音)",
+      "characters": [ { "char": "𑀧" }, { "char": "प" }, { "char": "પ" }, { "char": "ਪ" }, { "char": "প" }, { "char": "པ" }, { "char": "ପ" }, { "char": "ಪ" }, { "char": "ప" }, { "char": "ப" }, { "char": "പ" }, { "char": "ප" }, { "char": "ပ" }, { "char": "ป" }, { "char": "ປ" }, { "char": "ប" }, { "char": "" } ]
+    },
+    {
+      "phonetic": "ma",
+      "characters": [ { "char": "𑀫" }, { "char": "म" }, { "char": "મ" }, { "char": "ਮ" }, { "char": "ম" }, { "char": "མ" }, { "char": "ମ" }, { "char": "ಮ" }, { "char": "మ" }, { "char": "ம" }, { "char": "മ" }, { "char": "ම" }, { "char": "မ" }, { "char": "ม" }, { "char": "ມ" }, { "char": "ម" }, { "char": "" } ]
+    },
+    {
+      "phonetic": "ya (半母音)",
+      "characters": [ { "char": "𑀬" }, { "char": "य" }, { "char": "ય" }, { "char": "ਯ" }, { "char": "য" }, { "char": "ཡ" }, { "char": "ଯ" }, { "char": "ಯ" }, { "char": "య" }, { "char": "ய" }, { "char": "യ" }, { "char": "ය" }, { "char": "ယ" }, { "char": "ย" }, { "char": "ຍ" }, { "char": "យ" }, { "char": "" } ]
+    },
+    {
+      "phonetic": "sa (擦音)",
+      "characters": [ { "char": "𑀲" }, { "char": "स" }, { "char": "સ" }, { "char": "ਸ" }, { "char": "স" }, { "char": "ས" }, { "char": "ସ" }, { "char": "ಸ" }, { "char": "స" }, { "char": "ஸ" }, { "char": "സ" }, { "char": "ස" }, { "char": "" }, { "char": "ส" }, { "char": "ສ" }, { "char": "ស" }, { "char": "" } ]
+    }
+  ]
+}
