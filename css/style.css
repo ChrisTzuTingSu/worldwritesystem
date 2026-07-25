@@ -7,16 +7,37 @@ body {
     color: #2c3e50;
 }
 
+/* 基礎版面重置與隱藏機制 (完美解決地圖反黑與當機的寫法) */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+    background: #f8f9fa;
+    color: #2c3e50;
+}
+
+/* 放棄使用 display: none，改用絕對定位與透明度隱藏，保持容器物理尺寸以欺騙地圖套件 */
 .module-section {
-    display: none;
+    position: absolute;
+    top: 60px; /* 導覽列的高度 */
+    left: 0;
     width: 100%;
     height: calc(100vh - 60px);
-    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: -1;
     overflow: hidden;
 }
 
 .module-section.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 1;
+    position: relative; /* 恢復正常文檔流 */
+    top: auto;
+    height: calc(100vh - 60px);
 }
 
 /* 頂部全局導覽列 */
