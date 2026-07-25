@@ -167,3 +167,82 @@ body {
     margin-left: 15px;
     cursor: pointer;
 }
+/* 彈出視窗 (Modal) 樣式 */
+.modal-hidden {
+    display: none !important;
+}
+
+#detail-modal {
+    display: flex;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 85%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#close-modal {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: #7f8c8d;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#close-modal:hover {
+    color: #2c3e50;
+}
+
+/* 字母表網格與卡片樣式 */
+.alphabet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    margin-top: 1.5rem;
+}
+
+.alphabet-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.alphabet-card:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.alphabet-char {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.alphabet-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
