@@ -1,47 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // === 1. 取得全域 DOM 元素 ===
     const navButtons = document.querySelectorAll('#global-nav button');
     const sections = document.querySelectorAll('.module-section');
+    
+    // 取得書寫系統的次級按鈕
+    const sysButtons = document.querySelectorAll('.sys-btn');
     
     const detailModal = document.getElementById('detail-modal');
     const closeModal = document.getElementById('close-modal');
     const modalBody = document.getElementById('modal-body');
     
-    // 書寫系統分類 (表格) 的 DOM 元素 (假設您已在 index.html 放入這些 id)
     const tableContainer = document.getElementById('table-container');
     const descContainer = document.getElementById('description-container');
 
     const synth = window.speechSynthesis;
     
-    // 狀態追蹤
     let svgMapInstance = null;
     let isLeafletMapInitialized = false;
+    let isSystemLoaded = false; // 追蹤書寫系統是否已載入初始資料
 
-    // 關閉彈出視窗
     if (closeModal) {
         closeModal.addEventListener('click', () => {
             detailModal.classList.add('modal-hidden');
         });
     }
 
-    // === 2. 全局導覽列切換邏輯 ===
+    // 全局導覽列點擊
     navButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const targetId = e.target.getAttribute('data-target');
             
-            // 更新按鈕狀態
             navButtons.forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
             
-            // 更新視圖狀態
             sections.forEach(sec => sec.classList.remove('active'));
-            const activeSection = document.getElementById(targetId);
-            activeSection.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
             
-            // 路由分配 (延遲 50 毫秒確保 DOM 已經呈現 block 狀態，避免地圖破圖)
             setTimeout(() => {
                 handleModuleActivation(targetId);
             }, 50);
+        });
+    });
+
+    // 書寫系統次級導覽列點擊
+    sysButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            sysButtons.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            const targetSystem = e.target.getAttribute('data-system');
+            if (window.loadSystemData) {
+                window.loadSystemData(targetSystem);
+            }
         });
     });
 
@@ -60,10 +68,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         else if (targetId === 'system-section') {
-            // 您可以決定點擊此模組時，預設載入哪一個分類的 JSON (例如預設載入 alphabet)
-            // loadSystemData('alphabet'); 
+            // 首次進入此模組時，預設載入全音素文字資料
+            if (!isSystemLoaded && window.loadSystemData) {
+                window.loadSystemData('alphabet');
+                isSystemLoaded = true;
+            }
         }
     }
+
+    // ... [保留下方的 initModernMap, openLangDetail, speakText, loadSystemData, renderContent, initHistoryMap 等所有函式] ...
 
     // === 3. 現代地理分佈 (svgMap) - 採用您穩定運作的原始邏輯 ===
     function initModernMap() {
