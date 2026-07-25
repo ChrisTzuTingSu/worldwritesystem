@@ -1,76 +1,81 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // === 1. 取得全域 DOM 元素 ===
     const navButtons = document.querySelectorAll('#global-nav button');
     const sections = document.querySelectorAll('.module-section');
-    
-    let isSvgMapInitialized = false;
-    let isLeafletMapInitialized = false;
-    
-    const synth = window.speechSynthesis;
-    let svgMapInstance = null;
     
     const detailModal = document.getElementById('detail-modal');
     const closeModal = document.getElementById('close-modal');
     const modalBody = document.getElementById('modal-body');
+    
+    // 書寫系統分類 (表格) 的 DOM 元素 (假設您已在 index.html 放入這些 id)
+    const tableContainer = document.getElementById('table-container');
+    const descContainer = document.getElementById('description-container');
 
+    const synth = window.speechSynthesis;
+    
+    // 狀態追蹤
+    let svgMapInstance = null;
+    let isLeafletMapInitialized = false;
+
+    // 關閉彈出視窗
     if (closeModal) {
         closeModal.addEventListener('click', () => {
             detailModal.classList.add('modal-hidden');
         });
     }
-    
+
+    // === 2. 全局導覽列切換邏輯 ===
     navButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const targetId = e.target.getAttribute('data-target');
             
+            // 更新按鈕狀態
             navButtons.forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
             
+            // 更新視圖狀態
             sections.forEach(sec => sec.classList.remove('active'));
-            document.getElementById(targetId).classList.add('active');
+            const activeSection = document.getElementById(targetId);
+            activeSection.classList.add('active');
             
-            handleModuleActivation(targetId);
+            // 路由分配 (延遲 50 毫秒確保 DOM 已經呈現 block 狀態，避免地圖破圖)
+            setTimeout(() => {
+                handleModuleActivation(targetId);
+            }, 50);
         });
     });
 
     function handleModuleActivation(targetId) {
         if (targetId === 'modern-map-section') {
-            if (!isSvgMapInitialized) {
-                // 延遲 100 毫秒，確保 display: block 已完成 DOM 渲染
-                setTimeout(() => {
-                    initModernMap();
-                    isSvgMapInitialized = true;
-                }, 100);
-            } else {
-                // 若已初始化，手動觸發視窗尺寸改變事件，迫使 svgMap 重新計算寬高
-                setTimeout(() => {
-                    window.dispatchEvent(new Event('resize'));
-                }, 50);
-            }
+            initModernMap();
         } 
         else if (targetId === 'history-map-section') {
             if (!isLeafletMapInitialized) {
-                setTimeout(() => {
-                    initHistoryMap();
-                    isLeafletMapInitialized = true;
-                }, 100);
+                initHistoryMap();
+                isLeafletMapInitialized = true;
             } else {
                 if (window.leafletMapInstance) {
-                    setTimeout(() => window.leafletMapInstance.invalidateSize(), 100);
+                    window.leafletMapInstance.invalidateSize();
                 }
             }
         }
         else if (targetId === 'system-section') {
-            // 此處預留供靜態表格載入使用
+            // 您可以決定點擊此模組時，預設載入哪一個分類的 JSON (例如預設載入 alphabet)
+            // loadSystemData('alphabet'); 
         }
     }
 
+    // === 3. 現代地理分佈 (svgMap) - 採用您穩定運作的原始邏輯 ===
     function initModernMap() {
-        const mapContainer = document.getElementById('svg-map-container');
-        mapContainer.innerHTML = '';
+        if (svgMapInstance) {
+            return; // 確保只初始化一次
+        }
+
+        document.getElementById('svg-map-container').innerHTML = '';
 
         svgMapInstance = new svgMap({
             targetElementID: 'svg-map-container',
-            colorNoData: '#e9ecef', 
+            colorNoData: '#e9ecef', // 加上預設底色防呆
             data: {
                 data: {
                     status: {
@@ -87,17 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        mapContainer.addEventListener('click', (e) => {
-            const countryPath = e.target.closest('.svgMap-country');
-            if (countryPath) {
-                const countryCode = countryPath.getAttribute('data-id');
-                if (countryCode) {
+        // 完美重現您的延遲綁定邏輯
+        setTimeout(() => {
+            const mapElements = document.querySelectorAll('.svgMap-country');
+            mapElements.forEach(el => {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', function() {
+                    const countryCode = this.getAttribute('data-id');
                     openLangDetail(countryCode);
-                }
-            }
-        });
+                });
+            });
+        }, 500);
     }
 
+    // === 4. 詳細資訊視窗 (支援台灣等多語系陣列架構) ===
     window.openLangDetail = async function(targetCode) {
         try {
             const response = await fetch(`data/details/${targetCode}.json`);
@@ -111,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.region) contentHTML += `<p>主要使用地區：${data.region}</p>`;
             if (data.population) contentHTML += `<p>使用人數：${data.population}</p>`;
 
+            // 如果有多個語系 (如 TW.json)
             if (data.languages && Array.isArray(data.languages)) {
                 contentHTML += `<div style="margin-bottom: 1.5rem; padding: 1rem; background: #f1f3f5; border-radius: 4px;">`;
                 contentHTML += `<strong>語系導覽：</strong><br>`;
@@ -134,7 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     contentHTML += `</div>`;
                 });
-            } else if (data.alphabet) {
+            } 
+            // 單一語系 (如 TH.json)
+            else if (data.alphabet) {
                 contentHTML += `<h3>字母表 (點擊發音)</h3><div class="alphabet-grid">`;
                 data.alphabet.forEach(item => {
                     const clickAction = data.engineCode ? `onclick="speakText('${item.char}', '${data.engineCode}')"` : '';
@@ -166,6 +177,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // === 5. 書寫系統分類表格邏輯 (重現您的載入與渲染) ===
+    window.loadSystemData = async function(systemName) {
+        if (!tableContainer || !descContainer) return;
+        
+        try {
+            const response = await fetch(`data/${systemName}.json`);
+            if (!response.ok) throw new Error('Data fetch failed');
+            const data = await response.json();
+            renderContent(data);
+        } catch (error) {
+            console.error('Error:', error);
+            tableContainer.innerHTML = '<p>資料載入失敗，請確認檔案路徑或伺服器狀態。</p>';
+        }
+    };
+
+    function renderContent(data) {
+        descContainer.innerHTML = `<h2>${data.title}</h2><p>${data.description}</p>`;
+        let tableHTML = '<table class="evolution-table"><thead><tr>';
+        
+        data.headers.forEach(header => {
+            if (header.langCode && header.hasDetail) {
+                tableHTML += `<th class="lang-header" onclick="openLangDetail('${header.langCode}')">${header.name}</th>`;
+            } else {
+                tableHTML += `<th>${header.name}</th>`;
+            }
+        });
+        tableHTML += '</tr></thead><tbody>';
+
+        data.rows.forEach(row => {
+            tableHTML += '<tr>';
+            tableHTML += `<td>${row.phonetic}</td>`;
+            row.characters.forEach((charData, index) => {
+                if (charData.char) {
+                    const langCode = data.headers[index + 1].langCode;
+                    tableHTML += `<td class="char-cell" onclick="speakText('${charData.char}', '${langCode}')">${charData.char}</td>`;
+                } else {
+                    tableHTML += '<td class="char-empty"></td>';
+                }
+            });
+            tableHTML += '</tr>';
+        });
+
+        tableHTML += '</tbody></table>';
+        tableContainer.innerHTML = tableHTML;
+    }
+
+    // === 6. 歷史演化流變 (Leaflet 敘事) ===
     function initHistoryMap() {
         const mapContainer = document.getElementById('leaflet-map-container');
         const storyContainer = document.getElementById('story-container');
@@ -219,12 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `,
                 mapData: [
-                    {
-                        center: [33.8, 35.5], zoom: 5,
-                        layers: [
-                            { type: 'node', lat: 33.8, lng: 35.5, chars: '𐤀𐤁𐤂𐤃', label: 'Phoenician' }
-                        ]
-                    },
+                    { center: [33.8, 35.5], zoom: 5, layers: [{ type: 'node', lat: 33.8, lng: 35.5, chars: '𐤀𐤁𐤂𐤃', label: 'Phoenician' }] },
                     {
                         center: [40.0, 22.0], zoom: 5,
                         layers: [
@@ -266,12 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `,
                 mapData: [
-                    {
-                        center: [34.0, 108.0], zoom: 5,
-                        layers: [
-                            { type: 'node', lat: 34.0, lng: 108.0, chars: '天地玄黃', label: 'Chinese (漢字)' }
-                        ]
-                    },
+                    { center: [34.0, 108.0], zoom: 5, layers: [{ type: 'node', lat: 34.0, lng: 108.0, chars: '天地玄黃', label: 'Chinese (漢字)' }] },
                     {
                         center: [28.0, 122.0], zoom: 4, 
                         layers: [
@@ -316,11 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const marker = L.marker([item.lat, item.lng], { icon: createNodeIcon(item.chars, item.label) }).addTo(window.leafletMapInstance);
                         currentLayers.push(marker);
                     } else if (item.type === 'arrow') {
-                        const line = L.polyline([item.start, item.end], {
-                            color: item.color,
-                            weight: 3,
-                            className: 'flow-line'
-                        }).addTo(window.leafletMapInstance);
+                        const line = L.polyline([item.start, item.end], { color: item.color, weight: 3, className: 'flow-line' }).addTo(window.leafletMapInstance);
                         currentLayers.push(line);
                     }
                 });
@@ -367,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
             clearGlobalLayers();
             
             storyContainer.innerHTML = currentStoryData.htmlContent;
-
             mapContainer.classList.add('story-mode');
             storyContainer.classList.add('active');
             backBtn.style.display = 'block';
