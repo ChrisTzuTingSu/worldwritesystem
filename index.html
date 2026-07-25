@@ -9,24 +9,72 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
-    <!-- svgMap 資源 -->
+    <!-- svgMap 與其必備的縮放引擎 svg-pan-zoom -->
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/svgmap@2.12.2/dist/svgMap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/svgmap@2.12.2/dist/svgMap.min.js"></script>
     
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* 基礎版面重置與隱藏機制 */
-        body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background: #f8f9fa; color: #2c3e50; }
-        .module-section { display: none; width: 100%; height: calc(100vh - 60px); position: relative; overflow: hidden; }
-        .module-section.active { display: block; }
+        /* 基礎版面重置 */
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: system-ui, sans-serif; 
+            background: #f8f9fa; 
+            color: #2c3e50; 
+        }
+
+        /* 隱藏機制：利用畫面外藏匿術，確保地圖引擎永不崩潰 */
+        .module-section { 
+            position: absolute; 
+            top: -9999px; 
+            left: -9999px; 
+            width: 100%; 
+            height: calc(100vh - 60px); 
+            visibility: hidden; 
+            overflow: hidden;
+        }
+
+        .module-section.active { 
+            position: relative; 
+            top: 0; 
+            left: 0; 
+            visibility: visible; 
+        }
         
         /* 頂部全局導覽列 */
-        #global-nav { height: 60px; background: #1a252f; display: flex; align-items: center; padding: 0 20px; gap: 15px; }
-        #global-nav button { background: transparent; color: #bdc3c7; border: none; font-size: 1rem; cursor: pointer; padding: 10px 15px; transition: color 0.2s; }
-        #global-nav button:hover, #global-nav button.active { color: #fff; border-bottom: 2px solid #3498db; }
+        #global-nav { 
+            height: 60px; 
+            background: #1a252f; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 20px; 
+            gap: 15px; 
+        }
+
+        #global-nav button { 
+            background: transparent; 
+            color: #bdc3c7; 
+            border: none; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            padding: 10px 15px; 
+            transition: color 0.2s; 
+        }
+
+        #global-nav button:hover, #global-nav button.active { 
+            color: #fff; 
+            border-bottom: 2px solid #3498db; 
+        }
         
         /* 內部容器佈局預設設定 */
-        .content-wrapper { padding: 20px; overflow-y: auto; height: 100%; box-sizing: border-box; }
+        .content-wrapper { 
+            padding: 20px; 
+            overflow-y: auto; 
+            height: 100%; 
+            box-sizing: border-box; 
+        }
     </style>
 </head>
 <body>
@@ -61,11 +109,11 @@
             </div>
             <button id="history-back-btn" style="position: absolute; top: 20px; left: 20px; z-index: 1000; display: none;">← 返回全球總覽</button>
         </section>
-<!-- 模組四：書寫系統分類 (靜態表格與發音) -->
+
+        <!-- 模組四：書寫系統分類 (靜態表格與發音) -->
         <section id="system-section" class="module-section">
             <div class="content-wrapper">
                 <nav id="system-sub-nav" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <!-- 以下 data-system 必須與您 data 資料夾內的 json 檔名完全一致 -->
                     <button class="sys-btn active" data-system="alphabet">全音素文字 (Alphabet)</button>
                     <button class="sys-btn" data-system="abjad">輔音音素文字 (Abjad)</button>
                     <button class="sys-btn" data-system="abugida">元音附標文字 (Abugida)</button>
@@ -86,13 +134,15 @@
             </div>
         </section>
     </main>
-<!-- 彈出視窗 (Modal) 結構 -->
+
+    <!-- 彈出視窗 (Modal) 結構 -->
     <div id="detail-modal" class="modal-hidden">
         <div class="modal-content">
             <span id="close-modal">&times;</span>
             <div id="modal-body"></div>
         </div>
     </div>
+    
     <script src="js/app.js"></script>
 </body>
 </html>
