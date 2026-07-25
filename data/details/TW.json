@@ -6,35 +6,67 @@
   "languages": [
     {
       "name": "繁體中文與注音符號",
-      "desc": "由中華民國教育部頒布，作為漢字標音與基礎語文教育的核心系統。共有37個基本符號與4個聲調符號。",
+      "desc": "由中華民國教育部頒布，作為漢字標音與基礎語文教育的核心系統。包含三十七個基本音節符號與四個聲調符號。",
       "engineCode": "zh-TW",
       "alphabet": [
-        { "char": "ㄅ", "name": "b" },
-        { "char": "ㄆ", "name": "p" },
-        { "char": "ㄇ", "name": "m" },
-        { "char": "ㄈ", "name": "f" },
-        { "char": "ㄉ", "name": "d" },
-        { "char": "ㄊ", "name": "t" },
-        { "char": "ㄋ", "name": "n" },
-        { "char": "ㄌ", "name": "l" },
-        { "char": "ㄍ", "name": "g" },
-        { "char": "ㄎ", "name": "k" },
-        { "char": "ㄏ", "name": "h" }
+        { "char": "ㄅ", "name": "b" }, { "char": "ㄆ", "name": "p" }, { "char": "ㄇ", "name": "m" }, { "char": "ㄈ", "name": "f" },
+        { "char": "ㄉ", "name": "d" }, { "char": "ㄊ", "name": "t" }, { "char": "ㄋ", "name": "n" }, { "char": "ㄌ", "name": "l" },
+        { "char": "ㄍ", "name": "g" }, { "char": "ㄎ", "name": "k" }, { "char": "ㄏ", "name": "h" },
+        { "char": "ㄐ", "name": "j" }, { "char": "ㄑ", "name": "q" }, { "char": "ㄒ", "name": "x" },
+        { "char": "ㄓ", "name": "zh" }, { "char": "ㄔ", "name": "ch" }, { "char": "ㄕ", "name": "sh" }, { "char": "ㄖ", "name": "r" },
+        { "char": "ㄗ", "name": "z" }, { "char": "ㄘ", "name": "c" }, { "char": "ㄙ", "name": "s" },
+        { "char": "ㄧ", "name": "i" }, { "char": "ㄨ", "name": "u" }, { "char": "ㄩ", "name": "ü" },
+        { "char": "ㄚ", "name": "a" }, { "char": "ㄛ", "name": "o" }, { "char": "ㄜ", "name": "e" }, { "char": "ㄝ", "name": "ê" },
+        { "char": "ㄞ", "name": "ai" }, { "char": "ㄟ", "name": "ei" }, { "char": "ㄠ", "name": "ao" }, { "char": "ㄡ", "name": "ou" },
+        { "char": "ㄢ", "name": "an" }, { "char": "ㄣ", "name": "en" }, { "char": "ㄤ", "name": "ang" }, { "char": "ㄥ", "name": "eng" },
+        { "char": "ㄦ", "name": "er" },
+        { "char": "˙", "name": "輕聲" }, { "char": "ˊ", "name": "二聲" }, { "char": "ˇ", "name": "三聲" }, { "char": "ˋ", "name": "四聲" }
       ]
     },
     {
       "name": "台灣台語羅馬字拼音方案 (Tâi-lô)",
-      "desc": "簡稱台羅拼音，是以傳統白話字 (POJ) 為基礎進行標準化整合的書寫系統，精確標示了台語的七個基礎聲調與輕聲。",
+      "desc": "簡稱台羅拼音，是以傳統白話字為基礎進行標準化整合的書寫系統，精確標示了台語的聲母、韻母與聲調。此處列出基礎聲母與單元音。",
       "engineCode": "",
       "alphabet": [
-        { "char": "p", "name": "雙唇不送氣清塞音" },
-        { "char": "ph", "name": "雙唇送氣清塞音" },
-        { "char": "b", "name": "雙唇濁塞音" },
-        { "char": "m", "name": "雙唇鼻音" },
-        { "char": "t", "name": "齒齦不送氣清塞音" },
-        { "char": "th", "name": "齒齦送氣清塞音" },
-        { "char": "l", "name": "齒齦邊音" },
-        { "char": "k", "name": "軟顎不送氣清塞音" },
+        { "char": "p", "name": "清雙唇塞音" }, { "char": "ph", "name": "清雙唇送氣塞音" }, { "char": "m", "name": "雙唇鼻音" }, { "char": "b", "name": "濁雙唇塞音" },
+        { "char": "t", "name": "清齒齦塞音" }, { "char": "th", "name": "清齒齦送氣塞音" }, { "char": "n", "name": "齒齦鼻音" }, { "char": "l", "name": "齒齦邊音" },
+        { "char": "k", "name": "清軟顎塞音" }, { "char": "kh", "name": "清軟顎送氣塞音" }, { "char": "ng", "name": "軟顎鼻音" }, { "char": "g", "name": "濁軟顎塞音" },
+        { "char": "ts", "name": "清齒齦塞擦音" }, { "char": "tsh", "name": "清齒齦送氣塞擦音" }, { "char": "s", "name": "清齒齦擦音" }, { "char": "j", "name": "濁齒齦擦音" },
+        { "char": "h", "name": "清聲門擦音" },
+        { "char": "a", "name": "開前不圓唇元音" }, { "char": "i", "name": "閉前不圓唇元音" }, { "char": "u", "name": "閉後圓唇元音" },
+        { "char": "e", "name": "半閉前不圓唇元音" }, { "char": "o", "name": "半閉後圓唇元音" }, { "char": "oo", "name": "半開後圓唇元音" }
+      ]
+    },
+    {
+      "name": "客語白話字 (Pha̍k-fa-sṳ)",
+      "desc": "十九世紀由傳教士創制，用以記錄客家話語音的羅馬拼音系統。其特徵在於具備 f 與 v 等唇齒音標示，精準反映客語的語音特色。",
+      "engineCode": "",
+      "alphabet": [
+        { "char": "p", "name": "清雙唇塞音" }, { "char": "ph", "name": "清雙唇送氣塞音" }, { "char": "m", "name": "雙唇鼻音" },
+        { "char": "f", "name": "清唇齒擦音" }, { "char": "v", "name": "濁唇齒擦音" },
+        { "char": "t", "name": "清齒齦塞音" }, { "char": "th", "name": "清齒齦送氣塞音" }, { "char": "n", "name": "齒齦鼻音" }, { "char": "l", "name": "齒齦邊音" },
+        { "char": "k", "name": "清軟顎塞音" }, { "char": "kh", "name": "清軟顎送氣塞音" }, { "char": "ng", "name": "軟顎鼻音" },
+        { "char": "ts", "name": "清齒齦塞擦音" }, { "char": "tsh", "name": "清齒齦送氣塞擦音" }, { "char": "s", "name": "清齒齦擦音" },
+        { "char": "h", "name": "清聲門擦音" },
+        { "char": "a", "name": "開中央不圓唇元音" }, { "char": "i", "name": "閉前不圓唇元音" }, { "char": "u", "name": "閉後圓唇元音" },
+        { "char": "e", "name": "半閉前不圓唇元音" }, { "char": "o", "name": "半閉後圓唇元音" }, { "char": "y", "name": "閉央不圓唇元音" }
+      ]
+    },
+    {
+      "name": "原住民族語言書寫系統",
+      "desc": "依據中華民國原住民族委員會頒布之規範，採行羅馬字母為基礎的音素文字系統。涵蓋各族語通用之二十二個基礎字母與聲門塞音符號。",
+      "engineCode": "",
+      "alphabet": [
+        { "char": "a", "name": "元音 a" }, { "char": "c", "name": "輔音 c" }, { "char": "d", "name": "輔音 d" }, { "char": "e", "name": "元音 e" },
+        { "char": "g", "name": "輔音 g" }, { "char": "h", "name": "輔音 h" }, { "char": "i", "name": "元音 i" }, { "char": "k", "name": "輔音 k" },
+        { "char": "l", "name": "輔音 l" }, { "char": "m", "name": "輔音 m" }, { "char": "n", "name": "輔音 n" }, { "char": "ng", "name": "輔音 ng" },
+        { "char": "o", "name": "元音 o" }, { "char": "p", "name": "輔音 p" }, { "char": "q", "name": "輔音 q" }, { "char": "r", "name": "輔音 r" },
+        { "char": "s", "name": "輔音 s" }, { "char": "t", "name": "輔音 t" }, { "char": "u", "name": "元音 u" }, { "char": "v", "name": "輔音 v" },
+        { "char": "w", "name": "輔音 w" }, { "char": "y", "name": "輔音 y" }, { "char": "z", "name": "輔音 z" }, { "char": "'", "name": "聲門塞音" }
+      ]
+    }
+  ]
+}        { "char": "k", "name": "軟顎不送氣清塞音" },
         { "char": "kh", "name": "軟顎送氣清塞音" }
       ]
     },
