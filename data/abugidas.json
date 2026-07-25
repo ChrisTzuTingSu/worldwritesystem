@@ -1,7 +1,7 @@
 {
   "title": "元音附標文字 (Abugidas)",
   "description": "源自古印度的婆羅米文。此系統基於嚴密的發音部位與發音方法矩陣排列，每個輔音字母皆預設帶有基礎母音。系統隨宗教與貿易向南亞及東南亞擴散，演化出高度多樣的字體，但其底層的語音學架構仍維持一致。",
-    "headers": [
+"headers": [
     { "name": "發音對應" },
     { "name": "婆羅米文", "langCode": "" },
     { "name": "印地文", "langCode": "hi-IN" },
@@ -16,7 +16,7 @@
     { "name": "馬拉雅拉姆文", "langCode": "ml-IN" },
     { "name": "僧伽羅文", "langCode": "si-LK" },
     { "name": "緬甸文", "langCode": "my-MM" },
-    { "name": "泰文", "langCode": "th-TH", "hasDetail": true },
+    { "name": "泰文", "langCode": "th-TH", "countryCode": "TH", "hasDetail": true },
     { "name": "寮文", "langCode": "lo-LA" },
     { "name": "高棉文", "langCode": "km-KH" },
     { "name": "阿姆哈拉文", "langCode": "am-ET" }
