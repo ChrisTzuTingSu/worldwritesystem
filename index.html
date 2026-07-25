@@ -61,12 +61,15 @@
             </div>
             <button id="history-back-btn" style="position: absolute; top: 20px; left: 20px; z-index: 1000; display: none;">← 返回全球總覽</button>
         </section>
-
         <!-- 模組四：書寫系統分類 (靜態表格與發音) -->
         <section id="system-section" class="module-section">
             <div class="content-wrapper">
-                <nav id="system-sub-nav">
-                    <!-- 原本的表格分類按鈕放此處 -->
+                <nav id="system-sub-nav" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="sys-btn active" data-system="alphabet">全音素文字 (Alphabet)</button>
+                    <button class="sys-btn" data-system="abjad">輔音音素文字 (Abjad)</button>
+                    <button class="sys-btn" data-system="abugida">元音附標文字 (Abugida)</button>
+                    <button class="sys-btn" data-system="syllabary">音節文字 (Syllabary)</button>
+                    <button class="sys-btn" data-system="logogram">語素文字 (Logogram)</button>
                 </nav>
                 <div id="description-container"></div>
                 <div id="table-container"></div>
