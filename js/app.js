@@ -79,16 +79,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ==========================================
+// ==========================================
     // 3. 現代地理分佈 (svgMap) 
     // ==========================================
     function initModernMap() {
-        const mapContainer = document.getElementById('svg-map-container');
-        
-        // 核心防呆：每次進來都強制清空容器，消滅崩潰的舊地圖，重新繪製
-        mapContainer.innerHTML = '';
+        // 核心修正：確保 svgMap 一生只初始化一次，避免 svg-pan-zoom 崩潰
+        if (svgMapInstance) {
+            return; 
+        }
 
-        new svgMap({
+        svgMapInstance = new svgMap({
             targetElementID: 'svg-map-container',
             colorNoData: '#e9ecef',
             data: {
