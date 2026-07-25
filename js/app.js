@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const synth = window.speechSynthesis;
     
-    // 🔴 就是這裡！上一版漏掉了 svgMapInstance 的宣告
+
     let svgMapInstance = null; 
     let isLeafletMapInitialized = false;
     let isSystemLoaded = false; 
@@ -183,13 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.speakText = function(text, lang) {
         if (synth && lang) {
             synth.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
+            // 強制轉換為小寫，避免語音引擎朗讀「大寫 (majuscule)」提示詞
+            const utterance = new SpeechSynthesisUtterance(text.toLowerCase());
             utterance.lang = lang;
             utterance.rate = 0.8; 
             synth.speak(utterance);
         }
     };
-
+    
     // ==========================================
     // 5. 書寫系統分類表格邏輯 
     // ==========================================
