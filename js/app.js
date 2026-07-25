@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    function handleModuleActivation(targetId) {
+function handleModuleActivation(targetId) {
         if (targetId === 'modern-map-section') {
             initModernMap();
         } 
@@ -75,8 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-
-    // ... [保留下方的 initModernMap, openLangDetail, speakText, loadSystemData, renderContent, initHistoryMap 等所有函式] ...
 
     // === 3. 現代地理分佈 (svgMap) - 採用您穩定運作的原始邏輯 ===
     function initModernMap() {
