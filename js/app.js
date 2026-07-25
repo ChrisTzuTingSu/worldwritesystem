@@ -55,20 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function handleModuleActivation(targetId) {
         if (targetId === 'modern-map-section') {
-            initModernMap();
+            // 延遲 50 毫秒，確保 display: block 已經生效
+            setTimeout(() => {
+                initModernMap(); // 每次進入都強制重新繪製 svgMap
+            }, 50);
         } 
         else if (targetId === 'history-map-section') {
             if (!isLeafletMapInitialized) {
-                initHistoryMap();
-                isLeafletMapInitialized = true;
+                setTimeout(() => {
+                    initHistoryMap();
+                    isLeafletMapInitialized = true;
+                }, 50);
             } else {
                 if (window.leafletMapInstance) {
-                    window.leafletMapInstance.invalidateSize();
+                    setTimeout(() => window.leafletMapInstance.invalidateSize(), 50);
                 }
             }
         }
         else if (targetId === 'system-section') {
-            // 首次進入此模組時，預設載入全音素文字資料
             if (!isSystemLoaded && window.loadSystemData) {
                 window.loadSystemData('alphabet');
                 isSystemLoaded = true;
@@ -77,22 +81,17 @@ function handleModuleActivation(targetId) {
     }
 
     // === 3. 現代地理分佈 (svgMap) - 採用您穩定運作的原始邏輯 ===
-    function initModernMap() {
-        if (svgMapInstance) {
-            return; // 確保只初始化一次
-        }
-
-        document.getElementById('svg-map-container').innerHTML = '';
+function initModernMap() {
+        const mapContainer = document.getElementById('svg-map-container');
+        // 核心關鍵：每次都把容器清空，徹底消滅崩潰的舊地圖
+        mapContainer.innerHTML = '';
 
         svgMapInstance = new svgMap({
             targetElementID: 'svg-map-container',
-            colorNoData: '#e9ecef', // 加上預設底色防呆
+            colorNoData: '#e9ecef', 
             data: {
                 data: {
-                    status: {
-                        name: '資料庫狀態',
-                        format: '{0}'
-                    }
+                    status: { name: '資料庫狀態', format: '{0}' }
                 },
                 applyData: 'status',
                 values: {
@@ -103,7 +102,6 @@ function handleModuleActivation(targetId) {
             }
         });
 
-        // 完美重現您的延遲綁定邏輯
         setTimeout(() => {
             const mapElements = document.querySelectorAll('.svgMap-country');
             mapElements.forEach(el => {
