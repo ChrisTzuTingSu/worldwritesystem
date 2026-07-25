@@ -246,3 +246,58 @@ body {
     font-size: 0.8rem;
     color: #6c757d;
 }
+/* 書寫系統次級導覽列樣式 */
+.sys-btn {
+    padding: 8px 16px;
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #495057;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.sys-btn:hover {
+    background: #dee2e6;
+}
+
+.sys-btn.active {
+    background: #3498db;
+    color: #fff;
+    border-color: #3498db;
+}
+
+/* 演化表格基礎樣式 (確保表格正確呈現) */
+.evolution-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+}
+
+.evolution-table th, 
+.evolution-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.evolution-table th {
+    background-color: #f1f3f5;
+    color: #2c3e50;
+}
+
+.lang-header, .char-cell {
+    cursor: pointer;
+}
+
+.lang-header:hover {
+    background-color: #e2e6ea;
+    text-decoration: underline;
+}
+
+.char-cell:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.05);
+}
