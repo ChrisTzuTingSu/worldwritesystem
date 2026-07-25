@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const synth = window.speechSynthesis;
     
+    // 🔴 就是這裡！上一版漏掉了 svgMapInstance 的宣告
+    let svgMapInstance = null; 
     let isLeafletMapInitialized = false;
     let isSystemLoaded = false; 
 
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sections.forEach(sec => sec.classList.remove('active'));
             document.getElementById(targetId).classList.add('active');
             
-            // 核心防呆：延遲 50 毫秒，確保 CSS display: block 完全生效後才繪製地圖
+            // 延遲 50 毫秒，確保 CSS 隱藏機制切換完畢
             setTimeout(() => {
                 handleModuleActivation(targetId);
             }, 50);
@@ -79,11 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-// ==========================================
+    // ==========================================
     // 3. 現代地理分佈 (svgMap) 
     // ==========================================
     function initModernMap() {
-        // 核心修正：確保 svgMap 一生只初始化一次，避免 svg-pan-zoom 崩潰
+        // 確保 svgMap 一生只初始化一次，避免 svg-pan-zoom 崩潰
         if (svgMapInstance) {
             return; 
         }
@@ -195,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tableContainer || !descContainer) return;
         
         const fetchUrl = `data/${systemName}.json`;
-        console.log("系統正在嘗試讀取：", fetchUrl); 
         
         try {
             const response = await fetch(fetchUrl);
@@ -206,17 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
             renderContent(data);
         } catch (error) {
             console.error('Error:', error);
-            // 強化版錯誤提示：直接將伺服器找不到的路徑印在畫面上，方便比對抓漏
             tableContainer.innerHTML = `
                 <div style="background: #ffe3e3; border: 1px solid #ff6b6b; padding: 20px; border-radius: 8px;">
                     <h3 style="color: #c92a2a; margin-top:0;">⚠️ 資料載入失敗 (404 Not Found)</h3>
                     <p>系統試圖尋找的檔案路徑為：<b>${fetchUrl}</b></p>
-                    <p>請檢查您的 GitHub 資料夾：</p>
-                    <ul style="color: #495057;">
-                        <li>這份檔案是否真的存在於 <code>data</code> 資料夾內？</li>
-                        <li>副檔名是否確實為 <code>.json</code>？</li>
-                        <li>檔名是否多加了 s (例如 alphabets)？</li>
-                    </ul>
+                    <p>請檢查您的 GitHub 資料夾配置是否正確。</p>
                 </div>
             `;
         }
