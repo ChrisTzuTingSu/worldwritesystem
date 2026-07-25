@@ -5,6 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let isSvgMapInitialized = false;
     let isLeafletMapInitialized = false;
     
+    const synth = window.speechSynthesis;
+    let svgMapInstance = null;
+    
+    const detailModal = document.getElementById('detail-modal');
+    const closeModal = document.getElementById('close-modal');
+    const modalBody = document.getElementById('modal-body');
+
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            detailModal.classList.add('modal-hidden');
+        });
+    }
+    
     navButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const targetId = e.target.getAttribute('data-target');
@@ -42,8 +55,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initModernMap() {
-        console.log('現代地理分佈模組初始化區塊');
+        const mapContainer = document.getElementById('svg-map-container');
+        mapContainer.innerHTML = '';
+
+        svgMapInstance = new svgMap({
+            targetElementID: 'svg-map-container',
+            data: {
+                data: {
+                    status: {
+                        name: '資料庫狀態',
+                        format: '{0}'
+                    }
+                },
+                applyData: 'status',
+                values: {
+                    TH: { status: '已建置專屬介紹', color: '#6ECCB0' },
+                    TW: { status: '已建置專屬介紹', color: '#6ECCB0' },
+                    FR: { status: '已建置專屬介紹', color: '#6ECCB0' }
+                }
+            }
+        });
+
+        setTimeout(() => {
+            const mapElements = document.querySelectorAll('.svgMap-country');
+            mapElements.forEach(el => {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', function() {
+                    const countryCode = this.getAttribute('data-id');
+                    openLangDetail(countryCode);
+                });
+            });
+        }, 500);
     }
+
+    window.openLangDetail = async function(targetCode) {
+        try {
+            const response = await fetch(`data/details/${targetCode}.json`);
+            if (!response.ok) throw new Error('Detail fetch failed');
+            const data = await response.json();
+            
+            const displayTitle = data.title || data.language;
+            let contentHTML = `<h2>${displayTitle}</h2>`;
+
+            if (data.intro) contentHTML += `<p>概論：${data.intro}</p>`;
+            if (data.region) contentHTML += `<p>主要使用地區：${data.region}</p>`;
+            if (data.population) contentHTML += `<p>使用人數：${data.population}</p>`;
+
+            if (data.languages && Array.isArray(data.languages)) {
+                contentHTML += `<div style="margin-bottom: 1.5rem; padding: 1rem; background: #f1f3f5; border-radius: 4px;">`;
+                contentHTML += `<strong>語系導覽：</strong><br>`;
+                data.languages.forEach((lang, idx) => {
+                    contentHTML += `<a href="#lang-sec-${idx}" style="margin-right: 1rem; color: #2c3e50; text-decoration: underline; display: inline-block; margin-top: 0.5rem;">${lang.name}</a>`;
+                });
+                contentHTML += `</div>`;
+
+                data.languages.forEach((lang, idx) => {
+                    contentHTML += `<h3 id="lang-sec-${idx}" style="margin-top: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem;">${lang.name}</h3>`;
+                    contentHTML += `<p>${lang.desc}</p>`;
+                    contentHTML += `<div class="alphabet-grid">`;
+                    lang.alphabet.forEach(item => {
+                        const clickAction = lang.engineCode ? `onclick="speakText('${item.char}', '${lang.engineCode}')"` : '';
+                        contentHTML += `
+                            <div class="alphabet-card" ${clickAction}>
+                                <span class="alphabet-char">${item.char}</span>
+                                <div class="alphabet-name">${item.name}</div>
+                            </div>
+                        `;
+                    });
+                    contentHTML += `</div>`;
+                });
+            } else if (data.alphabet) {
+                contentHTML += `<h3>字母表 (點擊發音)</h3><div class="alphabet-grid">`;
+                data.alphabet.forEach(item => {
+                    const clickAction = data.engineCode ? `onclick="speakText('${item.char}', '${data.engineCode}')"` : '';
+                    contentHTML += `
+                        <div class="alphabet-card" ${clickAction}>
+                            <span class="alphabet-char">${item.char}</span>
+                            <div class="alphabet-name">${item.name}</div>
+                        </div>
+                    `;
+                });
+                contentHTML += `</div>`;
+            }
+
+            modalBody.innerHTML = contentHTML;
+            detailModal.classList.remove('modal-hidden');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('尚無此國家或語言的詳細資料。');
+        }
+    };
+
+    window.speakText = function(text, lang) {
+        if (synth && lang) {
+            synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.8; 
+            synth.speak(utterance);
+        }
+    };
 
     function initHistoryMap() {
         const mapContainer = document.getElementById('leaflet-map-container');
@@ -231,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         iconSize: [20, 20]
                     });
                     
-                        const marker = L.marker([story.originLat, story.originLng], { icon: icon }).addTo(window.leafletMapInstance);
+                    const marker = L.marker([story.originLat, story.originLng], { icon: icon }).addTo(window.leafletMapInstance);
                     marker.on('click', () => startStoryMode(key));
                     globalLayers.push(marker);
                 });
