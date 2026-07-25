@@ -12,12 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.getElementById('close-modal');
     const modalBody = document.getElementById('modal-body');
 
+    // 關閉彈出視窗邏輯
     if (closeModal) {
         closeModal.addEventListener('click', () => {
             detailModal.classList.add('modal-hidden');
         });
     }
     
+    // 導覽列切換邏輯
     navButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const targetId = e.target.getAttribute('data-target');
@@ -54,12 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ==========================================
+    // 模組二：現代地理分佈 (svgMap)
+    // ==========================================
     function initModernMap() {
         const mapContainer = document.getElementById('svg-map-container');
         mapContainer.innerHTML = '';
 
         svgMapInstance = new svgMap({
             targetElementID: 'svg-map-container',
+            colorNoData: '#e9ecef', // 解決黑色地圖問題：設定無資料國家的預設底色
             data: {
                 data: {
                     status: {
@@ -76,16 +82,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        setTimeout(() => {
-            const mapElements = document.querySelectorAll('.svgMap-country');
-            mapElements.forEach(el => {
-                el.style.cursor = 'pointer';
-                el.addEventListener('click', function() {
-                    const countryCode = this.getAttribute('data-id');
+        // 解決點擊失效問題：採用事件代理 (Event Delegation) 捕捉點擊
+        mapContainer.addEventListener('click', (e) => {
+            // 尋找點擊目標是否為 svgMap 的國家板塊 (帶有 .svgMap-country 類別)
+            const countryPath = e.target.closest('.svgMap-country');
+            if (countryPath) {
+                const countryCode = countryPath.getAttribute('data-id');
+                if (countryCode) {
                     openLangDetail(countryCode);
-                });
-            });
-        }, 500);
+                }
+            }
+        });
     }
 
     window.openLangDetail = async function(targetCode) {
@@ -156,6 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // ==========================================
+    // 模組三：歷史演化流變 (Leaflet)
+    // ==========================================
     function initHistoryMap() {
         const mapContainer = document.getElementById('leaflet-map-container');
         const storyContainer = document.getElementById('story-container');
