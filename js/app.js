@@ -14,9 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const synth = window.speechSynthesis;
     
-    let svgMapInstance = null;
     let isLeafletMapInitialized = false;
-    let isSystemLoaded = false; // 追蹤書寫系統是否已載入初始資料
+    let isSystemLoaded = false; 
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
@@ -24,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 全局導覽列點擊
+    // ==========================================
+    // 1. 全局導覽列切換邏輯
+    // ==========================================
     navButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const targetId = e.target.getAttribute('data-target');
@@ -35,13 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
             sections.forEach(sec => sec.classList.remove('active'));
             document.getElementById(targetId).classList.add('active');
             
+            // 核心防呆：延遲 50 毫秒，確保 CSS display: block 完全生效後才繪製地圖
             setTimeout(() => {
                 handleModuleActivation(targetId);
             }, 50);
         });
     });
 
-    // 書寫系統次級導覽列點擊
+    // ==========================================
+    // 2. 書寫系統次級導覽列點擊
+    // ==========================================
     sysButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             sysButtons.forEach(btn => btn.classList.remove('active'));
@@ -53,22 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-function handleModuleActivation(targetId) {
+    function handleModuleActivation(targetId) {
         if (targetId === 'modern-map-section') {
-            // 延遲 50 毫秒，確保 display: block 已經生效
-            setTimeout(() => {
-                initModernMap(); // 每次進入都強制重新繪製 svgMap
-            }, 50);
+            initModernMap();
         } 
         else if (targetId === 'history-map-section') {
             if (!isLeafletMapInitialized) {
-                setTimeout(() => {
-                    initHistoryMap();
-                    isLeafletMapInitialized = true;
-                }, 50);
+                initHistoryMap();
+                isLeafletMapInitialized = true;
             } else {
                 if (window.leafletMapInstance) {
-                    setTimeout(() => window.leafletMapInstance.invalidateSize(), 50);
+                    window.leafletMapInstance.invalidateSize();
                 }
             }
         }
@@ -80,15 +79,18 @@ function handleModuleActivation(targetId) {
         }
     }
 
-    // === 3. 現代地理分佈 (svgMap) - 採用您穩定運作的原始邏輯 ===
-function initModernMap() {
+    // ==========================================
+    // 3. 現代地理分佈 (svgMap) 
+    // ==========================================
+    function initModernMap() {
         const mapContainer = document.getElementById('svg-map-container');
-        // 核心關鍵：每次都把容器清空，徹底消滅崩潰的舊地圖
+        
+        // 核心防呆：每次進來都強制清空容器，消滅崩潰的舊地圖，重新繪製
         mapContainer.innerHTML = '';
 
-        svgMapInstance = new svgMap({
+        new svgMap({
             targetElementID: 'svg-map-container',
-            colorNoData: '#e9ecef', 
+            colorNoData: '#e9ecef',
             data: {
                 data: {
                     status: { name: '資料庫狀態', format: '{0}' }
@@ -114,7 +116,9 @@ function initModernMap() {
         }, 500);
     }
 
-    // === 4. 詳細資訊視窗 (支援台灣等多語系陣列架構) ===
+    // ==========================================
+    // 4. 詳細資訊視窗 (Modal)
+    // ==========================================
     window.openLangDetail = async function(targetCode) {
         try {
             const response = await fetch(`data/details/${targetCode}.json`);
@@ -128,7 +132,6 @@ function initModernMap() {
             if (data.region) contentHTML += `<p>主要使用地區：${data.region}</p>`;
             if (data.population) contentHTML += `<p>使用人數：${data.population}</p>`;
 
-            // 如果有多個語系 (如 TW.json)
             if (data.languages && Array.isArray(data.languages)) {
                 contentHTML += `<div style="margin-bottom: 1.5rem; padding: 1rem; background: #f1f3f5; border-radius: 4px;">`;
                 contentHTML += `<strong>語系導覽：</strong><br>`;
@@ -153,7 +156,6 @@ function initModernMap() {
                     contentHTML += `</div>`;
                 });
             } 
-            // 單一語系 (如 TH.json)
             else if (data.alphabet) {
                 contentHTML += `<h3>字母表 (點擊發音)</h3><div class="alphabet-grid">`;
                 data.alphabet.forEach(item => {
@@ -186,18 +188,37 @@ function initModernMap() {
         }
     };
 
-    // === 5. 書寫系統分類表格邏輯 (重現您的載入與渲染) ===
+    // ==========================================
+    // 5. 書寫系統分類表格邏輯 
+    // ==========================================
     window.loadSystemData = async function(systemName) {
         if (!tableContainer || !descContainer) return;
         
+        const fetchUrl = `data/${systemName}.json`;
+        console.log("系統正在嘗試讀取：", fetchUrl); 
+        
         try {
-            const response = await fetch(`data/${systemName}.json`);
-            if (!response.ok) throw new Error('Data fetch failed');
+            const response = await fetch(fetchUrl);
+            if (!response.ok) {
+                throw new Error(`找不到檔案！HTTP 狀態碼: ${response.status}`);
+            }
             const data = await response.json();
             renderContent(data);
         } catch (error) {
             console.error('Error:', error);
-            tableContainer.innerHTML = '<p>資料載入失敗，請確認檔案路徑或伺服器狀態。</p>';
+            // 強化版錯誤提示：直接將伺服器找不到的路徑印在畫面上，方便比對抓漏
+            tableContainer.innerHTML = `
+                <div style="background: #ffe3e3; border: 1px solid #ff6b6b; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #c92a2a; margin-top:0;">⚠️ 資料載入失敗 (404 Not Found)</h3>
+                    <p>系統試圖尋找的檔案路徑為：<b>${fetchUrl}</b></p>
+                    <p>請檢查您的 GitHub 資料夾：</p>
+                    <ul style="color: #495057;">
+                        <li>這份檔案是否真的存在於 <code>data</code> 資料夾內？</li>
+                        <li>副檔名是否確實為 <code>.json</code>？</li>
+                        <li>檔名是否多加了 s (例如 alphabets)？</li>
+                    </ul>
+                </div>
+            `;
         }
     };
 
@@ -232,7 +253,9 @@ function initModernMap() {
         tableContainer.innerHTML = tableHTML;
     }
 
-    // === 6. 歷史演化流變 (Leaflet 敘事) ===
+    // ==========================================
+    // 6. 歷史演化流變 (Leaflet 敘事)
+    // ==========================================
     function initHistoryMap() {
         const mapContainer = document.getElementById('leaflet-map-container');
         const storyContainer = document.getElementById('story-container');
