@@ -79,50 +79,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initMap() {
         if (mapInstance) {
-            mapInstance.invalidateSize(); 
             return;
         }
 
-        mapInstance = L.map('map-container').setView([20, 0], 2);
+        document.getElementById('map-container').innerHTML = '';
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 6,
-            minZoom: 2
-        }).addTo(mapInstance);
-
-        fetch('data/countries.geojson')
-            .then(response => {
-                if (!response.ok) throw new Error('GeoJSON fetch failed');
-                return response.json();
-            })
-            .then(geoData => {
-                L.geoJSON(geoData, {
-                    style: {
-                        color: "#2c3e50",
-                        weight: 1,
-                        fillColor: "#e9ecef",
-                        fillOpacity: 0.6
-                    },
-                    onEachFeature: function (feature, layer) {
-                        layer.on('mouseover', function () {
-                            this.setStyle({ fillColor: '#3498db', fillOpacity: 0.8 });
-                        });
-                        layer.on('mouseout', function () {
-                            this.setStyle({ fillColor: '#e9ecef', fillOpacity: 0.6 });
-                        });
-                        
-                        layer.on('click', function () {
-                            const countryCode = feature.properties.ISO_a2; 
-                            openLangDetail(countryCode);
-                        });
+        mapInstance = new svgMap({
+            targetElementID: 'map-container',
+            data: {
+                data: {
+                    status: {
+                        name: '資料庫狀態',
+                        format: '{0}'
                     }
-                }).addTo(mapInstance);
-            })
-            .catch(error => {
-                console.error('GeoJSON 載入失敗:', error);
-                document.getElementById('map-container').innerHTML = '<p style="padding:2rem;">無法載入地理圖層，請確認 data/countries.geojson 檔案是否存在。</p>';
+                },
+                applyData: 'status',
+                values: {
+                    TH: { status: '已建置專屬介紹', color: '#6ECCB0' }
+                }
+            }
+        });
+
+        setTimeout(() => {
+            const mapElements = document.querySelectorAll('.svgMap-country');
+            mapElements.forEach(el => {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', function() {
+                    const countryCode = this.getAttribute('data-id');
+                    openLangDetail(countryCode);
+                });
             });
+        }, 500);
     }
 
     window.openLangDetail = async function(targetCode) {
