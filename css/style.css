@@ -1,5 +1,6 @@
 /* 基礎版面重置與隱藏機制 (利用畫面外藏匿術，確保地圖引擎永不崩潰) */
 body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background: #f8f9fa; color: #2c3e50; }
+button { font: inherit; }
 
 .module-section { 
     position: absolute; 
@@ -19,13 +20,38 @@ body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background: #f
 
 /* 頂部全局導覽列 */
 #global-nav {
-    height: 60px;
+    min-height: 60px;
     background: #1a252f;
     display: flex;
     align-items: center;
     padding: 0 20px;
     gap: 15px;
 }
+
+.home-wrapper { max-width: 1180px; margin: 0 auto; }
+.hero { padding: clamp(3rem, 8vw, 7rem) 0 3rem; max-width: 850px; }
+.eyebrow { color: #2878a8; font-weight: 750; letter-spacing: .12em; font-size: .78rem; }
+.hero h1, .section-intro h1 { color: #172b3a; line-height: 1.12; margin: .5rem 0 1rem; }
+.hero h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); }
+.hero-lead { max-width: 720px; font-size: 1.2rem; line-height: 1.75; color: #526777; }
+.primary-action { border: 0; border-radius: 999px; padding: .85rem 1.3rem; background: #1676a8; color: white; cursor: pointer; }
+.concept-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #dce5ea; border: 1px solid #dce5ea; border-radius: 14px; overflow: hidden; }
+.concept-strip article { background: white; padding: 1.5rem; }
+.concept-strip span { color: #16806d; font-weight: 800; }
+.concept-strip h2 { font-size: 1.05rem; margin: .6rem 0; }
+.concept-strip p { color: #60717e; line-height: 1.6; }
+.home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0 4rem; }
+.home-grid button { display: flex; flex-direction: column; gap: .4rem; text-align: left; padding: 1.3rem; border: 1px solid #dbe3e8; border-radius: 12px; background: #eef5f7; color: #1b3545; cursor: pointer; }
+.home-grid button:hover { transform: translateY(-2px); border-color: #88b7c8; }
+.home-grid span { color: #61727e; }
+.section-intro { max-width: 780px; margin-bottom: 2rem; }
+.section-intro p { line-height: 1.7; color: #5b6d78; }
+.nav-label { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 750; color: #6b7b85; margin: 1rem 0 .5rem; }
+.system-nav { margin-bottom: 1rem; display: flex; gap: 10px; flex-wrap: wrap; }
+.case-nav .sys-btn { background: white; border-style: dashed; }
+.case-nav .sys-btn.active { background: #23566e; border-style: solid; }
+.modal-jump-link { margin-right: 1rem; color: #205f80; text-decoration: underline; display: inline-block; margin-top: .5rem; }
+.modal-section-title { margin-top: 2rem; border-bottom: 1px solid #ccd5da; padding-bottom: .5rem; }
 
 #global-nav button {
     background: transparent;
@@ -203,7 +229,13 @@ body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background: #f
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    border: 0;
+    background: transparent;
 }
+
+.phonetics-card { margin-bottom: 1rem; padding: 1.2rem 1.4rem; background: #fff; border: 1px solid #dfe6ea; border-radius: 10px; }
+.phonetics-card h3 { margin-top: 0; color: #2c3e50; }
+.phonetics-card p { line-height: 1.8; margin-bottom: 0; }
 
 #close-modal:hover {
     color: #2c3e50;
@@ -298,4 +330,16 @@ body { margin: 0; padding: 0; font-family: system-ui, sans-serif; background: #f
 .char-cell:hover {
     background-color: #f8f9fa;
     transform: scale(1.05);
+}
+
+@media (max-width: 760px) {
+    #global-nav { overflow-x: auto; gap: 0; padding: 0 8px; }
+    #global-nav button { flex: 0 0 auto; font-size: .9rem; padding: 10px; }
+    .module-section { height: calc(100vh - 60px); }
+    .concept-strip, .home-grid { grid-template-columns: 1fr; }
+    #leaflet-map-container { width: 100% !important; height: 45% !important; }
+    #story-container { margin-left: 0 !important; width: 100% !important; height: 55% !important; top: 45%; padding: 0 !important; }
+    .step { min-height: 55vh; padding: 0 1.5rem; }
+    .evolution-table { min-width: 760px; }
+    #table-container { overflow-x: auto; }
 }

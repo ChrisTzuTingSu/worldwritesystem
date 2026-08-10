@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const descContainer = document.getElementById('description-container');
 
     const synth = window.speechSynthesis;
+
+    const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    })[char]);
     
 
     let svgMapInstance = null; 
@@ -42,6 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 handleModuleActivation(targetId);
             }, 50);
+        });
+    });
+
+    document.querySelectorAll('[data-go-to]').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelector(`#global-nav button[data-target="${button.dataset.goTo}"]`)?.click();
         });
     });
 
@@ -128,30 +138,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             const displayTitle = data.title || data.language;
-            let contentHTML = `<h2>${displayTitle}</h2>`;
+            let contentHTML = `<h2>${escapeHTML(displayTitle)}</h2>`;
 
-            if (data.intro) contentHTML += `<p>概論：${data.intro}</p>`;
-            if (data.region) contentHTML += `<p>主要使用地區：${data.region}</p>`;
-            if (data.population) contentHTML += `<p>使用人數：${data.population}</p>`;
+            if (data.intro) contentHTML += `<p><strong>概論：</strong>${escapeHTML(data.intro)}</p>`;
+            if (data.region) contentHTML += `<p><strong>主要使用地區：</strong>${escapeHTML(data.region)}</p>`;
+            if (data.population) contentHTML += `<p><strong>使用人數：</strong>${escapeHTML(data.population)}</p>`;
 
             if (data.languages && Array.isArray(data.languages)) {
                 contentHTML += `<div style="margin-bottom: 1.5rem; padding: 1rem; background: #f1f3f5; border-radius: 4px;">`;
                 contentHTML += `<strong>語系導覽：</strong><br>`;
                 data.languages.forEach((lang, idx) => {
-                    contentHTML += `<a href="#lang-sec-${idx}" style="margin-right: 1rem; color: #2c3e50; text-decoration: underline; display: inline-block; margin-top: 0.5rem;">${lang.name}</a>`;
+                    contentHTML += `<a href="#lang-sec-${idx}" class="modal-jump-link">${escapeHTML(lang.name)}</a>`;
                 });
                 contentHTML += `</div>`;
 
                 data.languages.forEach((lang, idx) => {
-                    contentHTML += `<h3 id="lang-sec-${idx}" style="margin-top: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem;">${lang.name}</h3>`;
-                    contentHTML += `<p>${lang.desc}</p>`;
+                    contentHTML += `<h3 id="lang-sec-${idx}" class="modal-section-title">${escapeHTML(lang.name)}</h3>`;
+                    contentHTML += `<p>${escapeHTML(lang.desc)}</p>`;
                     contentHTML += `<div class="alphabet-grid">`;
                     lang.alphabet.forEach(item => {
-                        const clickAction = lang.engineCode ? `onclick="speakText('${item.char}', '${lang.engineCode}')"` : '';
+                        const clickAction = lang.engineCode ? `data-speak="${escapeHTML(item.char)}" data-lang="${escapeHTML(lang.engineCode)}"` : '';
                         contentHTML += `
                             <div class="alphabet-card" ${clickAction}>
-                                <span class="alphabet-char">${item.char}</span>
-                                <div class="alphabet-name">${item.name}</div>
+                                <span class="alphabet-char">${escapeHTML(item.char)}</span>
+                                <div class="alphabet-name">${escapeHTML(item.name)}</div>
                             </div>
                         `;
                     });
@@ -161,11 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (data.alphabet) {
                 contentHTML += `<h3>字母表 (點擊發音)</h3><div class="alphabet-grid">`;
                 data.alphabet.forEach(item => {
-                    const clickAction = data.engineCode ? `onclick="speakText('${item.char}', '${data.engineCode}')"` : '';
+                    const clickAction = data.engineCode ? `data-speak="${escapeHTML(item.char)}" data-lang="${escapeHTML(data.engineCode)}"` : '';
                     contentHTML += `
                         <div class="alphabet-card" ${clickAction}>
-                            <span class="alphabet-char">${item.char}</span>
-                            <div class="alphabet-name">${item.name}</div>
+                            <span class="alphabet-char">${escapeHTML(item.char)}</span>
+                            <div class="alphabet-name">${escapeHTML(item.name)}</div>
                         </div>
                     `;
                 });
@@ -173,6 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             modalBody.innerHTML = contentHTML;
+            modalBody.querySelectorAll('[data-speak]').forEach(card => {
+                card.addEventListener('click', () => window.speakText(card.dataset.speak, card.dataset.lang));
+            });
             detailModal.classList.remove('modal-hidden');
         } catch (error) {
             console.error('Error:', error);
@@ -219,25 +232,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function renderContent(data) {
-        descContainer.innerHTML = `<h2>${data.title}</h2><p>${data.description}</p>`;
+        descContainer.innerHTML = `<h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.description)}</p>`;
         let tableHTML = '<table class="evolution-table"><thead><tr>';
         
         data.headers.forEach(header => {
             if (header.langCode && header.hasDetail) {
-                tableHTML += `<th class="lang-header" onclick="openLangDetail('${header.langCode}')">${header.name}</th>`;
+                const detailCode = header.countryCode || header.langCode;
+                tableHTML += `<th class="lang-header" data-detail="${escapeHTML(detailCode)}">${escapeHTML(header.name)}</th>`;
             } else {
-                tableHTML += `<th>${header.name}</th>`;
+                tableHTML += `<th>${escapeHTML(header.name)}</th>`;
             }
         });
         tableHTML += '</tr></thead><tbody>';
 
         data.rows.forEach(row => {
             tableHTML += '<tr>';
-            tableHTML += `<td>${row.phonetic}</td>`;
+            tableHTML += `<td>${escapeHTML(row.phonetic)}</td>`;
             row.characters.forEach((charData, index) => {
                 if (charData.char) {
                     const langCode = data.headers[index + 1].langCode;
-                    tableHTML += `<td class="char-cell" onclick="speakText('${charData.char}', '${langCode}')">${charData.char}</td>`;
+                    const speakAttrs = langCode ? ` data-speak="${escapeHTML(charData.char)}" data-lang="${escapeHTML(langCode)}"` : '';
+                    tableHTML += `<td class="char-cell"${speakAttrs}>${escapeHTML(charData.char)}</td>`;
                 } else {
                     tableHTML += '<td class="char-empty"></td>';
                 }
@@ -247,6 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tableHTML += '</tbody></table>';
         tableContainer.innerHTML = tableHTML;
+        tableContainer.querySelectorAll('[data-detail]').forEach(header => {
+            header.addEventListener('click', () => window.openLangDetail(header.dataset.detail));
+        });
+        tableContainer.querySelectorAll('[data-speak]').forEach(cell => {
+            cell.addEventListener('click', () => window.speakText(cell.dataset.speak, cell.dataset.lang));
+        });
     }
 
     // ==========================================
@@ -332,18 +353,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 ]
             },
-            "sino-tibetan": {
-                title: "漢藏語系 (Sino-Tibetan) 發展",
+            "east-asia": {
+                title: "東亞書寫文化圈",
                 originLat: 34.0,
                 originLng: 108.0,
                 htmlContent: `
                     <div class="step" data-index="0">
                         <h2>起源：漢字的成形</h2>
-                        <p>漢字作為世界上最古老且持續使用的語素文字之一，起源於黃河流域。早期的甲骨文與金文奠定了方塊字的基礎。</p>
+                        <p>漢字是延續使用至今的語素音節文字。早期甲骨文與金文留下可辨識的文字材料；後世字形、字彙與書寫技術仍持續演變。</p>
                     </div>
                     <div class="step" data-index="1">
                         <h2>東亞文化圈的擴散</h2>
-                        <p>漢字隨著文化與宗教交流，廣泛傳入朝鮮半島、日本與越南。各國在借用漢字的同時，也發展出如假名等符合自身語言音節特徵的表音系統。</p>
+                        <p>漢字傳入朝鮮半島、日本與越南後，被用來書寫不同語言。日文假名由漢字的草寫或局部字形發展；越南曾使用漢字與字喃。Hangul 則是十五世紀為韓語創制的獨立字母系統，其字母形狀不是由漢字演變而來。</p>
                     </div>
                 `,
                 mapData: [
@@ -352,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         center: [28.0, 122.0], zoom: 4, 
                         layers: [
                             { type: 'node', lat: 34.0, lng: 108.0, chars: '天地玄黃', label: 'Chinese (漢字)' },
-                            { type: 'node', lat: 37.5, lng: 127.0, chars: '가나다라', label: 'Korean (諺文)' },
+                            { type: 'node', lat: 37.5, lng: 127.0, chars: '漢字 → 한글', label: 'Korea：漢字使用與 Hangul 創制' },
                             { type: 'arrow', start: [34.0, 108.0], end: [37.5, 127.0], color: '#8e44ad' },
                             { type: 'node', lat: 35.0, lng: 139.0, chars: 'あいうえ', label: 'Japanese (假名)' },
                             { type: 'arrow', start: [34.0, 108.0], end: [35.0, 139.0], color: '#8e44ad' },

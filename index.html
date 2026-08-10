@@ -15,67 +15,6 @@
     <script src="https://cdn.jsdelivr.net/npm/svgmap@2.12.2/dist/svgMap.min.js"></script>
     
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* 基礎版面重置 */
-        body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: system-ui, sans-serif; 
-            background: #f8f9fa; 
-            color: #2c3e50; 
-        }
-
-        /* 隱藏機制：利用畫面外藏匿術，確保地圖引擎永不崩潰 */
-        .module-section { 
-            position: absolute; 
-            top: -9999px; 
-            left: -9999px; 
-            width: 100%; 
-            height: calc(100vh - 60px); 
-            visibility: hidden; 
-            overflow: hidden;
-        }
-
-        .module-section.active { 
-            position: relative; 
-            top: 0; 
-            left: 0; 
-            visibility: visible; 
-        }
-        
-        /* 頂部全局導覽列 */
-        #global-nav { 
-            height: 60px; 
-            background: #1a252f; 
-            display: flex; 
-            align-items: center; 
-            padding: 0 20px; 
-            gap: 15px; 
-        }
-
-        #global-nav button { 
-            background: transparent; 
-            color: #bdc3c7; 
-            border: none; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            padding: 10px 15px; 
-            transition: color 0.2s; 
-        }
-
-        #global-nav button:hover, #global-nav button.active { 
-            color: #fff; 
-            border-bottom: 2px solid #3498db; 
-        }
-        
-        /* 內部容器佈局預設設定 */
-        .content-wrapper { 
-            padding: 20px; 
-            overflow-y: auto; 
-            height: 100%; 
-            box-sizing: border-box; 
-        }
-    </style>
 </head>
 <body>
 
@@ -90,9 +29,24 @@
     <main id="main-content">
         <!-- 模組一：首頁概念導引 -->
         <section id="home-section" class="module-section active">
-            <div class="content-wrapper">
-                <h1>全球文字演化與書寫系統圖鑑</h1>
-                <p>請選擇上方導覽列以探索不同維度的文字學資料。</p>
+            <div class="content-wrapper home-wrapper">
+                <header class="hero">
+                    <p class="eyebrow">WORLD WRITING SYSTEMS</p>
+                    <h1>一張地圖，讀懂語言如何成為文字</h1>
+                    <p class="hero-lead">從「語言、文字、正字法」三個不同層次出發，探索文字如何記錄聲音與意義，又如何沿著歷史與地理傳播。</p>
+                    <button class="primary-action" data-go-to="system-section">開始認識書寫系統</button>
+                </header>
+                <section class="concept-strip" aria-label="核心概念">
+                    <article><span>01</span><h2>語言 Language</h2><p>人類使用的溝通系統，例如法語、泰語、韓語；語言不等於文字。</p></article>
+                    <article><span>02</span><h2>文字 Script</h2><p>可重複使用的符號集合，例如拉丁字母、泰文、漢字與 Hangul。</p></article>
+                    <article><span>03</span><h2>正字法 Orthography</h2><p>某種語言實際採用文字的規則；同一文字可以服務許多語言。</p></article>
+                </section>
+                <section class="home-grid">
+                    <button data-go-to="modern-map-section"><strong>現代地理分布</strong><span>從國家進入語言與正字法案例</span></button>
+                    <button data-go-to="history-map-section"><strong>歷史傳播路徑</strong><span>區分文字借用、改造與獨立創制</span></button>
+                    <button data-go-to="system-section"><strong>書寫原理分類</strong><span>比較 alphabet、abjad、abugida 等類型</span></button>
+                    <button data-go-to="phonetics-section"><strong>語音學工具箱</strong><span>理解文字所記錄的聲音單位</span></button>
+                </section>
             </div>
         </section>
 
@@ -113,13 +67,22 @@
         <!-- 模組四：書寫系統分類 (靜態表格與發音) -->
         <section id="system-section" class="module-section">
             <div class="content-wrapper">
-                <nav id="system-sub-nav" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="sys-btn active" data-system="alphabet">全音素文字 (Alphabet)</button>
-                    <button class="sys-btn" data-system="abjad">輔音音素文字 (Abjad)</button>
-                    <button class="sys-btn" data-system="abugida">元音附標文字 (Abugida)</button>
-                    <button class="sys-btn" data-system="chinese">漢字系統 (Chinese)</button>
-                    <button class="sys-btn" data-system="japanese">日文系統 (Japanese)</button>
-                    <button class="sys-btn" data-system="korean">韓文系統 (Korean)</button>
+                <header class="section-intro">
+                    <p class="eyebrow">TYPOLOGY → SCRIPT → ORTHOGRAPHY</p>
+                    <h1>先分清層次，再比較書寫系統</h1>
+                    <p>上層按「符號主要記錄什麼」分類；下層則展示特定語言如何混合或使用一種以上的文字。</p>
+                </header>
+                <p class="nav-label">書寫原理（Typology）</p>
+                <nav id="system-sub-nav" class="system-nav" aria-label="書寫原理">
+                    <button class="sys-btn active" data-system="alphabet">全音素文字</button>
+                    <button class="sys-btn" data-system="abjad">輔音音素文字</button>
+                    <button class="sys-btn" data-system="abugida">元音附標文字</button>
+                </nav>
+                <p class="nav-label">語言書寫案例（Orthography）</p>
+                <nav class="system-nav case-nav" aria-label="語言書寫案例">
+                    <button class="sys-btn" data-system="chinese">現代中文</button>
+                    <button class="sys-btn" data-system="japanese">現代日文</button>
+                    <button class="sys-btn" data-system="korean">現代韓文</button>
                 </nav>
                 <div id="description-container"></div>
                 <div id="table-container"></div>
@@ -195,13 +158,29 @@
                         <li>軟顎音 (Velar)：舌背與軟顎接觸，如 [k], [g], [ŋ]。</li>
                     </ul>
                 </article>
+
+                <article class="phonetics-card">
+                    <h3>四、元音：舌位與唇形</h3>
+                    <p>元音通常不以完全阻塞氣流的方式形成。描述元音時，主要觀察舌頭的高低（閉／開）、前後位置，以及嘴唇是否圓唇。例如 [i] 是閉前不圓唇元音，[u] 是閉後圓唇元音，[a] 則接近開元音。</p>
+                </article>
+
+                <article class="phonetics-card">
+                    <h3>五、音位、音值與字母不是同一件事</h3>
+                    <p><strong>音值</strong>是實際發出的聲音，通常寫在方括號中，如 [p]；<strong>音位</strong>是能區分詞義的抽象單位，寫在斜線中，如 /p/；<strong>字素</strong>則是書寫單位，如英文字母 ⟨p⟩。同一字母在不同語言中可能有不同音值。</p>
+                </article>
+
+                <article class="phonetics-card">
+                    <h3>六、聲調、重音與音節</h3>
+                    <p>語言也會利用超音段特徵組織對立。華語與泰語以聲調區分詞義；英語等語言常以重音凸顯音節。音節通常可分析為起首、韻核與韻尾，而日語假名更接近以「拍」（mora）為節奏與書寫單位。</p>
+                </article>
             </div>
         </section>
+    </main>
 
     <!-- 彈出視窗 (Modal) 結構 -->
     <div id="detail-modal" class="modal-hidden">
         <div class="modal-content">
-            <span id="close-modal">&times;</span>
+            <button id="close-modal" type="button" aria-label="關閉詳細資料">&times;</button>
             <div id="modal-body"></div>
         </div>
     </div>
