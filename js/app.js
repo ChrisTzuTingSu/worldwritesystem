@@ -1,51 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('#global-nav button');
     const sections = document.querySelectorAll('.module-section');
-    
-    // 取得書寫系統的次級按鈕
     const sysButtons = document.querySelectorAll('.sys-btn');
-    
     const detailModal = document.getElementById('detail-modal');
     const closeModal = document.getElementById('close-modal');
     const modalBody = document.getElementById('modal-body');
-    
     const tableContainer = document.getElementById('table-container');
     const descContainer = document.getElementById('description-container');
-
     const synth = window.speechSynthesis;
 
     const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
     })[char]);
-    
 
-    let svgMapInstance = null; 
+    let svgMapInstance = null;
     let isLeafletMapInitialized = false;
-    let isSystemLoaded = false; 
+    let isSystemLoaded = false;
 
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            detailModal.classList.add('modal-hidden');
-        });
+    function hideModal() {
+        detailModal?.classList.add('modal-hidden');
     }
 
-    // ==========================================
-    // 1. 全局導覽列切換邏輯
-    // ==========================================
+    closeModal?.addEventListener('click', hideModal);
+    detailModal?.addEventListener('click', event => {
+        if (event.target === detailModal) hideModal();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') hideModal();
+    });
+
     navButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const targetId = e.target.getAttribute('data-target');
-            
+        button.addEventListener('click', event => {
+            const targetId = event.currentTarget.dataset.target;
             navButtons.forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            
-            sections.forEach(sec => sec.classList.remove('active'));
-            document.getElementById(targetId).classList.add('active');
-            
-            // 延遲 50 毫秒，確保 CSS 隱藏機制切換完畢
-            setTimeout(() => {
-                handleModuleActivation(targetId);
-            }, 50);
+            event.currentTarget.classList.add('active');
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(targetId)?.classList.add('active');
+            setTimeout(() => handleModuleActivation(targetId), 50);
         });
     });
 
@@ -55,58 +46,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ==========================================
-    // 2. 書寫系統次級導覽列點擊
-    // ==========================================
     sysButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', event => {
             sysButtons.forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            const targetSystem = e.target.getAttribute('data-system');
-            if (window.loadSystemData) {
-                window.loadSystemData(targetSystem);
-            }
+            event.currentTarget.classList.add('active');
+            window.loadSystemData?.(event.currentTarget.dataset.system);
         });
     });
 
     function handleModuleActivation(targetId) {
         if (targetId === 'modern-map-section') {
             initModernMap();
-        } 
-        else if (targetId === 'history-map-section') {
+        } else if (targetId === 'history-map-section') {
             if (!isLeafletMapInitialized) {
                 initHistoryMap();
                 isLeafletMapInitialized = true;
             } else {
-                if (window.leafletMapInstance) {
-                    window.leafletMapInstance.invalidateSize();
-                }
+                window.leafletMapInstance?.invalidateSize();
             }
-        }
-        else if (targetId === 'system-section') {
-            if (!isSystemLoaded && window.loadSystemData) {
-                window.loadSystemData('alphabet');
-                isSystemLoaded = true;
-            }
+        } else if (targetId === 'system-section' && !isSystemLoaded) {
+            window.loadSystemData?.('alphabet');
+            isSystemLoaded = true;
         }
     }
 
-    // ==========================================
-    // 3. 現代地理分佈 (svgMap) 
-    // ==========================================
     function initModernMap() {
-        // 確保 svgMap 一生只初始化一次，避免 svg-pan-zoom 崩潰
-        if (svgMapInstance) {
-            return; 
-        }
+        if (svgMapInstance) return;
 
         svgMapInstance = new svgMap({
             targetElementID: 'svg-map-container',
             colorNoData: '#e9ecef',
             data: {
-                data: {
-                    status: { name: '資料庫狀態', format: '{0}' }
-                },
+                data: { status: { name: '資料庫狀態', format: '{0}' } },
                 applyData: 'status',
                 values: {
                     TH: { status: '已建置專屬介紹', color: '#6ECCB0' },
@@ -117,26 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         setTimeout(() => {
-            const mapElements = document.querySelectorAll('.svgMap-country');
-            mapElements.forEach(el => {
-                el.style.cursor = 'pointer';
-                el.addEventListener('click', function() {
-                    const countryCode = this.getAttribute('data-id');
-                    openLangDetail(countryCode);
-                });
+            document.querySelectorAll('.svgMap-country').forEach(element => {
+                element.style.cursor = 'pointer';
+                element.addEventListener('click', () => window.openLangDetail(element.dataset.id));
             });
         }, 500);
     }
 
-    // ==========================================
-    // 4. 詳細資訊視窗 (Modal)
-    // ==========================================
     window.openLangDetail = async function(targetCode) {
         try {
             const response = await fetch(`data/details/${targetCode}.json`);
             if (!response.ok) throw new Error('Detail fetch failed');
             const data = await response.json();
-            
             const displayTitle = data.title || data.language;
             let contentHTML = `<h2>${escapeHTML(displayTitle)}</h2>`;
 
@@ -144,42 +107,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.region) contentHTML += `<p><strong>主要使用地區：</strong>${escapeHTML(data.region)}</p>`;
             if (data.population) contentHTML += `<p><strong>使用人數：</strong>${escapeHTML(data.population)}</p>`;
 
-            if (data.languages && Array.isArray(data.languages)) {
-                contentHTML += `<div style="margin-bottom: 1.5rem; padding: 1rem; background: #f1f3f5; border-radius: 4px;">`;
-                contentHTML += `<strong>語系導覽：</strong><br>`;
-                data.languages.forEach((lang, idx) => {
-                    contentHTML += `<a href="#lang-sec-${idx}" class="modal-jump-link">${escapeHTML(lang.name)}</a>`;
+            if (Array.isArray(data.languages)) {
+                contentHTML += '<div class="modal-language-nav"><strong>語言導覽：</strong><br>';
+                data.languages.forEach((lang, index) => {
+                    contentHTML += `<a href="#lang-sec-${index}" class="modal-jump-link">${escapeHTML(lang.name)}</a>`;
                 });
-                contentHTML += `</div>`;
+                contentHTML += '</div>';
 
-                data.languages.forEach((lang, idx) => {
-                    contentHTML += `<h3 id="lang-sec-${idx}" class="modal-section-title">${escapeHTML(lang.name)}</h3>`;
-                    contentHTML += `<p>${escapeHTML(lang.desc)}</p>`;
-                    contentHTML += `<div class="alphabet-grid">`;
-                    lang.alphabet.forEach(item => {
-                        const clickAction = lang.engineCode ? `data-speak="${escapeHTML(item.char)}" data-lang="${escapeHTML(lang.engineCode)}"` : '';
-                        contentHTML += `
-                            <div class="alphabet-card" ${clickAction}>
-                                <span class="alphabet-char">${escapeHTML(item.char)}</span>
-                                <div class="alphabet-name">${escapeHTML(item.name)}</div>
-                            </div>
-                        `;
+                data.languages.forEach((lang, index) => {
+                    contentHTML += `<h3 id="lang-sec-${index}" class="modal-section-title">${escapeHTML(lang.name)}</h3>`;
+                    contentHTML += `<p>${escapeHTML(lang.desc)}</p><div class="alphabet-grid">`;
+                    (lang.alphabet || []).forEach(item => {
+                        const speakAttrs = lang.engineCode
+                            ? `data-speak="${escapeHTML(item.char)}" data-lang="${escapeHTML(lang.engineCode)}"`
+                            : '';
+                        contentHTML += `<div class="alphabet-card" ${speakAttrs}><span class="alphabet-char">${escapeHTML(item.char)}</span><div class="alphabet-name">${escapeHTML(item.name)}</div></div>`;
                     });
-                    contentHTML += `</div>`;
+                    contentHTML += '</div>';
                 });
-            } 
-            else if (data.alphabet) {
-                contentHTML += `<h3>字母表 (點擊發音)</h3><div class="alphabet-grid">`;
+            } else if (data.alphabet) {
+                contentHTML += '<h3>字母表（點擊發音）</h3><div class="alphabet-grid">';
                 data.alphabet.forEach(item => {
-                    const clickAction = data.engineCode ? `data-speak="${escapeHTML(item.char)}" data-lang="${escapeHTML(data.engineCode)}"` : '';
-                    contentHTML += `
-                        <div class="alphabet-card" ${clickAction}>
-                            <span class="alphabet-char">${escapeHTML(item.char)}</span>
-                            <div class="alphabet-name">${escapeHTML(item.name)}</div>
-                        </div>
-                    `;
+                    const speakAttrs = data.engineCode
+                        ? `data-speak="${escapeHTML(item.char)}" data-lang="${escapeHTML(data.engineCode)}"`
+                        : '';
+                    contentHTML += `<div class="alphabet-card" ${speakAttrs}><span class="alphabet-char">${escapeHTML(item.char)}</span><div class="alphabet-name">${escapeHTML(item.name)}</div></div>`;
                 });
-                contentHTML += `</div>`;
+                contentHTML += '</div>';
             }
 
             modalBody.innerHTML = contentHTML;
@@ -188,53 +142,37 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             detailModal.classList.remove('modal-hidden');
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Detail error:', error);
             alert('尚無此國家或語言的詳細資料。');
         }
     };
 
     window.speakText = function(text, lang) {
-        if (synth && lang) {
-            synth.cancel();
-            // 強制轉換為小寫，避免語音引擎朗讀「大寫 (majuscule)」提示詞
-            const utterance = new SpeechSynthesisUtterance(text.toLowerCase());
-            utterance.lang = lang;
-            utterance.rate = 0.8; 
-            synth.speak(utterance);
-        }
+        if (!synth || !lang) return;
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text.toLowerCase());
+        utterance.lang = lang;
+        utterance.rate = 0.8;
+        synth.speak(utterance);
     };
-    
-    // ==========================================
-    // 5. 書寫系統分類表格邏輯 
-    // ==========================================
+
     window.loadSystemData = async function(systemName) {
         if (!tableContainer || !descContainer) return;
-        
         const fetchUrl = `data/${systemName}.json`;
-        
+
         try {
             const response = await fetch(fetchUrl);
-            if (!response.ok) {
-                throw new Error(`找不到檔案！HTTP 狀態碼: ${response.status}`);
-            }
-            const data = await response.json();
-            renderContent(data);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            renderSystemContent(await response.json());
         } catch (error) {
-            console.error('Error:', error);
-            tableContainer.innerHTML = `
-                <div style="background: #ffe3e3; border: 1px solid #ff6b6b; padding: 20px; border-radius: 8px;">
-                    <h3 style="color: #c92a2a; margin-top:0;">⚠️ 資料載入失敗 (404 Not Found)</h3>
-                    <p>系統試圖尋找的檔案路徑為：<b>${fetchUrl}</b></p>
-                    <p>請檢查您的 GitHub 資料夾配置是否正確。</p>
-                </div>
-            `;
+            console.error('System data error:', error);
+            tableContainer.innerHTML = `<div class="error-panel"><h3>資料載入失敗</h3><p>找不到 ${escapeHTML(fetchUrl)}，請檢查檔案是否完整上傳。</p></div>`;
         }
     };
 
-    function renderContent(data) {
+    function renderSystemContent(data) {
         descContainer.innerHTML = `<h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.description)}</p>`;
         let tableHTML = '<table class="evolution-table"><thead><tr>';
-        
         data.headers.forEach(header => {
             if (header.langCode && header.hasDetail) {
                 const detailCode = header.countryCode || header.langCode;
@@ -246,22 +184,22 @@ document.addEventListener('DOMContentLoaded', () => {
         tableHTML += '</tr></thead><tbody>';
 
         data.rows.forEach(row => {
-            tableHTML += '<tr>';
-            tableHTML += `<td>${escapeHTML(row.phonetic)}</td>`;
+            tableHTML += `<tr><td>${escapeHTML(row.phonetic)}</td>`;
             row.characters.forEach((charData, index) => {
-                if (charData.char) {
-                    const langCode = data.headers[index + 1].langCode;
-                    const speakAttrs = langCode ? ` data-speak="${escapeHTML(charData.char)}" data-lang="${escapeHTML(langCode)}"` : '';
-                    tableHTML += `<td class="char-cell"${speakAttrs}>${escapeHTML(charData.char)}</td>`;
-                } else {
+                if (!charData.char) {
                     tableHTML += '<td class="char-empty"></td>';
+                    return;
                 }
+                const langCode = data.headers[index + 1]?.langCode;
+                const speakAttrs = langCode
+                    ? ` data-speak="${escapeHTML(charData.char)}" data-lang="${escapeHTML(langCode)}"`
+                    : '';
+                tableHTML += `<td class="char-cell"${speakAttrs}>${escapeHTML(charData.char)}</td>`;
             });
             tableHTML += '</tr>';
         });
 
-        tableHTML += '</tbody></table>';
-        tableContainer.innerHTML = tableHTML;
+        tableContainer.innerHTML = `${tableHTML}</tbody></table>`;
         tableContainer.querySelectorAll('[data-detail]').forEach(header => {
             header.addEventListener('click', () => window.openLangDetail(header.dataset.detail));
         });
@@ -270,233 +208,176 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // 6. 歷史演化流變 (Leaflet 敘事)
-    // ==========================================
-    function initHistoryMap() {
+    async function initHistoryMap() {
         const mapContainer = document.getElementById('leaflet-map-container');
         const storyContainer = document.getElementById('story-container');
         const backBtn = document.getElementById('history-back-btn');
 
         window.leafletMapInstance = L.map('leaflet-map-container', {
-            zoomControl: false,
+            zoomControl: true,
             scrollWheelZoom: false,
-            dragging: false
-        }).setView([20, 45], 3);
+            minZoom: 2
+        }).setView([25, 35], 2);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(window.leafletMapInstance);
 
+        let historyData;
+        try {
+            const response = await fetch('data/history-stories.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            historyData = await response.json();
+        } catch (error) {
+            console.error('History data error:', error);
+            storyContainer.classList.add('active');
+            storyContainer.innerHTML = '<div class="history-error"><h2>歷史資料載入失敗</h2><p>請確認 data/history-stories.json 已上傳。</p></div>';
+            return;
+        }
+
+        const storiesById = Object.fromEntries(historyData.stories.map(story => [story.id, story]));
         let currentLayers = [];
-        let globalLayers = [];
-        let renderTimeout; 
-        let globalTimeout;
+        let overviewLayers = [];
+        let renderTimeout;
+        let currentStory = null;
 
         function createNodeIcon(chars, label) {
             return L.divIcon({
                 className: 'node-icon',
-                iconSize: null, 
-                html: `
-                    <div class="node-content">
-                        <div class="node-chars">${chars}</div>
-                        <div class="node-label">${label}</div>
-                    </div>
-                `
+                iconSize: null,
+                html: `<div class="node-content"><div class="node-chars">${escapeHTML(chars)}</div><div class="node-label">${escapeHTML(label)}</div></div>`
             });
         }
 
-        const evolutionaryStories = {
-            "phoenician": {
-                title: "腓尼基文字傳播史",
-                originLat: 33.8,
-                originLng: 35.5,
-                htmlContent: `
-                    <div class="step" data-index="0">
-                        <h2>起源：腓尼基文字的傳播</h2>
-                        <p>約公元前1050年，活躍於黎凡特地區的腓尼基人發展出世界上最早被廣泛使用的輔音音素文字（Abjad）。此系統僅表記子音，母音需仰賴語境判斷。</p>
-                    </div>
-                    <div class="step" data-index="1">
-                        <h2>向西演化：希臘文與母音的誕生</h2>
-                        <p>當腓尼基文字傳入古希臘時，遇到了語音結構的挑戰。希臘人借用了部分希臘語中不存在的腓尼基子音符號，將其重定義為母音符號。此一結構性轉變標誌著全音素文字（Alphabet）的誕生，並進一步向西衍伸出拉丁字母與西里爾字母。</p>
-                    </div>
-                    <div class="step" data-index="2">
-                        <h2>向東演化：亞蘭文與輔音系統的延續</h2>
-                        <p>在陸路方面，腓尼基文字向東傳播演化為亞蘭文（Aramaic）。亞蘭文隨後成為中東地區的官方通用語，其字體演化最終孕育出現代的希伯來文與阿拉伯文。</p>
-                    </div>
-                `,
-                mapData: [
-                    { center: [33.8, 35.5], zoom: 5, layers: [{ type: 'node', lat: 33.8, lng: 35.5, chars: '𐤀𐤁𐤂𐤃', label: 'Phoenician' }] },
-                    {
-                        center: [40.0, 22.0], zoom: 5,
-                        layers: [
-                            { type: 'node', lat: 33.8, lng: 35.5, chars: '𐤀𐤁𐤂𐤃', label: 'Phoenician' },
-                            { type: 'node', lat: 38.5, lng: 22.0, chars: 'ΑΒΓΔ', label: 'Ancient Greek' },
-                            { type: 'arrow', start: [33.8, 35.5], end: [38.5, 22.0], color: '#2980b9' },
-                            { type: 'node', lat: 42.5, lng: 12.0, chars: 'ABCD', label: 'Latin' },
-                            { type: 'arrow', start: [38.5, 22.0], end: [42.5, 12.0], color: '#2c3e50' },
-                            { type: 'node', lat: 49.0, lng: 31.0, chars: 'АБВГ', label: 'Cyrillic' },
-                            { type: 'arrow', start: [38.5, 22.0], end: [49.0, 31.0], color: '#2c3e50' }
-                        ]
-                    },
-                    {
-                        center: [31.0, 38.0], zoom: 5,
-                        layers: [
-                            { type: 'node', lat: 33.8, lng: 35.5, chars: '𐤀𐤁𐤂𐤃', label: 'Phoenician' },
-                            { type: 'node', lat: 34.5, lng: 40.0, chars: '𐡀𐡁𐡂𐡃', label: 'Aramaic' },
-                            { type: 'arrow', start: [33.8, 35.5], end: [34.5, 40.0], color: '#d35400' },
-                            { type: 'node', lat: 31.5, lng: 35.0, chars: 'אבגד', label: 'Hebrew' },
-                            { type: 'arrow', start: [34.5, 40.0], end: [31.5, 35.0], color: '#c0392b' },
-                            { type: 'node', lat: 25.0, lng: 43.0, chars: 'ابجد', label: 'Arabic' },
-                            { type: 'arrow', start: [34.5, 40.0], end: [25.0, 43.0], color: '#c0392b' }
-                        ]
-                    }
-                ]
-            },
-            "east-asia": {
-                title: "東亞書寫文化圈",
-                originLat: 34.0,
-                originLng: 108.0,
-                htmlContent: `
-                    <div class="step" data-index="0">
-                        <h2>起源：漢字的成形</h2>
-                        <p>漢字是延續使用至今的語素音節文字。早期甲骨文與金文留下可辨識的文字材料；後世字形、字彙與書寫技術仍持續演變。</p>
-                    </div>
-                    <div class="step" data-index="1">
-                        <h2>東亞文化圈的擴散</h2>
-                        <p>漢字傳入朝鮮半島、日本與越南後，被用來書寫不同語言。日文假名由漢字的草寫或局部字形發展；越南曾使用漢字與字喃。Hangul 則是十五世紀為韓語創制的獨立字母系統，其字母形狀不是由漢字演變而來。</p>
-                    </div>
-                `,
-                mapData: [
-                    { center: [34.0, 108.0], zoom: 5, layers: [{ type: 'node', lat: 34.0, lng: 108.0, chars: '天地玄黃', label: 'Chinese (漢字)' }] },
-                    {
-                        center: [28.0, 122.0], zoom: 4, 
-                        layers: [
-                            { type: 'node', lat: 34.0, lng: 108.0, chars: '天地玄黃', label: 'Chinese (漢字)' },
-                            { type: 'node', lat: 37.5, lng: 127.0, chars: '漢字 → 한글', label: 'Korea：漢字使用與 Hangul 創制' },
-                            { type: 'arrow', start: [34.0, 108.0], end: [37.5, 127.0], color: '#8e44ad' },
-                            { type: 'node', lat: 35.0, lng: 139.0, chars: 'あいうえ', label: 'Japanese (假名)' },
-                            { type: 'arrow', start: [34.0, 108.0], end: [35.0, 139.0], color: '#8e44ad' },
-                            { type: 'node', lat: 21.0, lng: 105.0, chars: '喃字', label: 'Vietnamese (字喃)' },
-                            { type: 'arrow', start: [34.0, 108.0], end: [21.0, 105.0], color: '#8e44ad' }
-                        ]
-                    }
-                ]
-            }
-        };
-
-        let currentStoryData = null;
-
-        function clearMapLayers() {
-            currentLayers.forEach(layer => window.leafletMapInstance.removeLayer(layer));
-            currentLayers = [];
+        function clearLayers(layerList) {
+            layerList.forEach(layer => window.leafletMapInstance.removeLayer(layer));
+            layerList.length = 0;
         }
 
-        function clearGlobalLayers() {
-            globalLayers.forEach(layer => window.leafletMapInstance.removeLayer(layer));
-            globalLayers = [];
+        function arrowStyle(item, story) {
+            const styles = {
+                descent: { dashArray: null, opacity: 0.85 },
+                adaptation: { dashArray: '10 8', opacity: 0.9 },
+                context: { dashArray: '2 10', opacity: 0.65 }
+            };
+            return { color: story.color, weight: 3, ...(styles[item.relation] || styles.descent) };
         }
 
-        function renderMapData(index) {
-            if (!currentStoryData) return;
-            const data = currentStoryData.mapData[index];
-            if (!data) return;
-
+        function renderMapStep(index) {
+            if (!currentStory) return;
+            const step = currentStory.steps[index];
+            if (!step) return;
             clearTimeout(renderTimeout);
-            clearMapLayers();
-            
-            window.leafletMapInstance.flyTo(data.center, data.zoom, { duration: 1.2 });
+            clearLayers(currentLayers);
+            window.leafletMapInstance.flyTo(step.map.center, step.map.zoom, { duration: 0.8 });
 
             renderTimeout = setTimeout(() => {
-                data.layers.forEach(item => {
+                step.layers.forEach(item => {
                     if (item.type === 'node') {
-                        const marker = L.marker([item.lat, item.lng], { icon: createNodeIcon(item.chars, item.label) }).addTo(window.leafletMapInstance);
-                        currentLayers.push(marker);
+                        currentLayers.push(L.marker([item.lat, item.lng], {
+                            icon: createNodeIcon(item.chars, item.label)
+                        }).addTo(window.leafletMapInstance));
                     } else if (item.type === 'arrow') {
-                        const line = L.polyline([item.start, item.end], { color: item.color, weight: 3, className: 'flow-line' }).addTo(window.leafletMapInstance);
-                        currentLayers.push(line);
+                        currentLayers.push(L.polyline([item.start, item.end], {
+                            ...arrowStyle(item, currentStory),
+                            className: `flow-line relation-${item.relation || 'descent'}`
+                        }).addTo(window.leafletMapInstance));
                     }
                 });
-            }, 1200);
+            }, 850);
         }
 
-        function initGlobalView() {
+        function renderStoryIndex() {
+            currentStory = null;
             clearTimeout(renderTimeout);
-            clearTimeout(globalTimeout);
-            clearMapLayers();
-            clearGlobalLayers();
-            
-            storyContainer.classList.remove('active');
-            storyContainer.innerHTML = ''; 
-            mapContainer.classList.remove('story-mode');
+            clearLayers(currentLayers);
+            clearLayers(overviewLayers);
             backBtn.style.display = 'none';
-            currentStoryData = null;
-            
-            setTimeout(() => window.leafletMapInstance.invalidateSize(), 500);
-            
-            window.leafletMapInstance.flyTo([20, 45], 3, { duration: 1.2 });
+            storyContainer.classList.add('active', 'history-index');
+            storyContainer.scrollTop = 0;
+            storyContainer.innerHTML = `
+                <div class="history-index-inner">
+                    <p class="eyebrow">SCRIPT HISTORY</p>
+                    <h1>選擇一條文字歷史路線</h1>
+                    <p class="history-method">${escapeHTML(historyData.methodNote)}</p>
+                    <div class="history-route-list">
+                        ${historyData.stories.map(story => `
+                            <button class="history-route-card" data-story="${escapeHTML(story.id)}" style="--route-color:${escapeHTML(story.color)}">
+                                <span class="history-route-category">${escapeHTML(story.category)}</span>
+                                <strong>${escapeHTML(story.title)}</strong>
+                                <small>${escapeHTML(story.summary)}</small>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="history-legend">
+                        <span><i class="legend-line solid"></i>${escapeHTML(historyData.relationTypes.descent)}</span>
+                        <span><i class="legend-line dashed"></i>${escapeHTML(historyData.relationTypes.adaptation)}</span>
+                        <span><i class="legend-line dotted"></i>${escapeHTML(historyData.relationTypes.context)}</span>
+                    </div>
+                </div>`;
 
-            globalTimeout = setTimeout(() => {
-                Object.keys(evolutionaryStories).forEach(key => {
-                    const story = evolutionaryStories[key];
-                    const icon = L.divIcon({
-                        className: 'global-origin',
-                        html: `<div class="origin-marker" style="width: 20px; height: 20px;"></div><div class="origin-label">${story.title}</div>`,
-                        iconSize: [20, 20]
-                    });
-                    
-                    const marker = L.marker([story.originLat, story.originLng], { icon: icon }).addTo(window.leafletMapInstance);
-                    marker.on('click', () => startStoryMode(key));
-                    globalLayers.push(marker);
+            storyContainer.querySelectorAll('[data-story]').forEach(button => {
+                button.addEventListener('click', () => startStory(button.dataset.story));
+            });
+
+            window.leafletMapInstance.flyTo([25, 35], 2, { duration: 0.8 });
+            historyData.stories.forEach(story => {
+                const icon = L.divIcon({
+                    className: 'global-origin',
+                    iconSize: [18, 18],
+                    html: `<div class="origin-marker" style="--route-color:${escapeHTML(story.color)}" aria-hidden="true"></div>`
                 });
-            }, 1200);
+                const marker = L.marker([story.origin.lat, story.origin.lng], { icon }).addTo(window.leafletMapInstance);
+                marker.bindTooltip(story.title, { direction: 'top', offset: [0, -8] });
+                marker.on('click', () => startStory(story.id));
+                overviewLayers.push(marker);
+            });
+            setTimeout(() => window.leafletMapInstance.invalidateSize(), 50);
         }
 
-        function startStoryMode(storyId) {
-            currentStoryData = evolutionaryStories[storyId];
-            if(!currentStoryData) return;
+        function renderStoryHTML(story) {
+            const sourcesHTML = story.sources.map(source =>
+                `<li><a href="${escapeHTML(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)}</a></li>`
+            ).join('');
 
-            clearTimeout(globalTimeout);
-            clearGlobalLayers();
-            
-            storyContainer.innerHTML = currentStoryData.htmlContent;
-            mapContainer.classList.add('story-mode');
-            storyContainer.classList.add('active');
+            return story.steps.map((step, index) => `
+                <article class="step" data-index="${index}">
+                    <p class="step-period">${escapeHTML(step.period)}</p>
+                    <h2>${escapeHTML(step.title)}</h2>
+                    <p>${escapeHTML(step.body)}</p>
+                    <span class="relation-badge">${escapeHTML(step.relation)}</span>
+                    ${index === story.steps.length - 1 ? `<details class="story-sources"><summary>資料來源與延伸閱讀</summary><ul>${sourcesHTML}</ul></details>` : ''}
+                </article>
+            `).join('');
+        }
+
+        function startStory(storyId) {
+            currentStory = storiesById[storyId];
+            if (!currentStory) return;
+            clearLayers(overviewLayers);
+            storyContainer.classList.remove('history-index');
+            storyContainer.innerHTML = renderStoryHTML(currentStory);
+            storyContainer.scrollTop = 0;
             backBtn.style.display = 'block';
-            
-            const steps = storyContainer.querySelectorAll('.step');
-            steps.forEach(step => observer.observe(step));
-
+            storyContainer.querySelectorAll('.step').forEach(step => observer.observe(step));
             setTimeout(() => {
                 window.leafletMapInstance.invalidateSize();
-                storyContainer.scrollTo({ top: 0, behavior: 'smooth' });
-                renderMapData(0); 
-            }, 500);
+                renderMapStep(0);
+                storyContainer.querySelector('.step')?.classList.add('active');
+            }, 80);
         }
 
-        backBtn.addEventListener('click', () => {
-            initGlobalView();
-        });
+        backBtn.addEventListener('click', renderStoryIndex);
 
-        const observerOptions = {
-            root: storyContainer,
-            rootMargin: '-40% 0px -40% 0px',
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && storyContainer.classList.contains('active')) {
-                    const steps = storyContainer.querySelectorAll('.step');
-                    steps.forEach(s => s.classList.remove('active'));
-                    entry.target.classList.add('active');
-
-                    const index = entry.target.getAttribute('data-index');
-                    renderMapData(parseInt(index));
-                }
+                if (!entry.isIntersecting || !currentStory) return;
+                storyContainer.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+                entry.target.classList.add('active');
+                renderMapStep(Number(entry.target.dataset.index));
             });
-        }, observerOptions);
+        }, { root: storyContainer, rootMargin: '-40% 0px -40% 0px', threshold: 0 });
 
-        initGlobalView();
+        renderStoryIndex();
     }
 });

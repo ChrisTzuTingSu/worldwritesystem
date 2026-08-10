@@ -1,0 +1,312 @@
+{
+  "version": "1.0",
+  "methodNote": "本頁呈現的是文字（script）的傳承、借用與創制，不是語言的親緣樹。地圖位置為說明用的代表地點；年代與路線均為概略，實際傳播常包含更多中間階段。",
+  "relationTypes": {
+    "descent": "文字傳承／字形譜系",
+    "adaptation": "借用後改造",
+    "context": "文化環境或並用關係（非字形祖先）"
+  },
+  "stories": [
+    {
+      "id": "mediterranean-alphabets",
+      "title": "地中海字母的西傳",
+      "summary": "腓尼基文字經希臘人的元音創新、古義大利文字，再形成拉丁字母。",
+      "category": "abjad → alphabet",
+      "color": "#226f9b",
+      "origin": { "lat": 33.8, "lng": 35.5 },
+      "sources": [
+        { "label": "Unicode Chapter 10：Phoenician", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-10/" },
+        { "label": "Unicode Chapter 8：Old Italic", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-8/" },
+        { "label": "Unicode Chapter 7：Greek and Latin", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-7/" }
+      ],
+      "steps": [
+        {
+          "period": "約前12世紀起",
+          "title": "腓尼基文字：廣泛傳播的輔音文字",
+          "body": "腓尼基文字在地中海貿易網絡中廣泛使用，主要以字母記錄輔音。它不是世界最早的文字，但成為許多後世字母傳統的重要前身。",
+          "relation": "起點：輔音音素文字（abjad）",
+          "map": { "center": [33.8, 35.5], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 33.8, "lng": 35.5, "chars": "𐤀𐤁𐤂𐤃", "label": "Phoenician｜腓尼基" }
+          ]
+        },
+        {
+          "period": "約前8世紀起",
+          "title": "希臘字母：把部分符號改作元音",
+          "body": "希臘書寫者借用腓尼基字母，將若干希臘語不需要的輔音符號重新分析為元音字母。輔音與元音因此都能以獨立字母呈現。",
+          "relation": "借用後改造",
+          "map": { "center": [38, 28], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 33.8, "lng": 35.5, "chars": "𐤀𐤁𐤂𐤃", "label": "Phoenician" },
+            { "type": "node", "lat": 38.5, "lng": 22, "chars": "ΑΒΓΔ", "label": "Greek｜希臘" },
+            { "type": "arrow", "start": [33.8, 35.5], "end": [38.5, 22], "relation": "adaptation" }
+          ]
+        },
+        {
+          "period": "約前8至前6世紀",
+          "title": "古義大利文字與拉丁字母",
+          "body": "西方希臘字母傳入義大利半島後形成多種古義大利文字。羅馬人借用其中的伊特拉斯坎傳統，逐步形成拉丁字母。這條路線包含多次在地選擇，不是單純複製。",
+          "relation": "文字傳承與在地改造",
+          "map": { "center": [40.5, 17], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 38.5, "lng": 22, "chars": "ΑΒΓΔ", "label": "Western Greek" },
+            { "type": "node", "lat": 42.8, "lng": 11, "chars": "𐌀𐌁𐌂𐌃", "label": "Old Italic｜古義大利" },
+            { "type": "arrow", "start": [38.5, 22], "end": [42.8, 11], "relation": "descent" },
+            { "type": "node", "lat": 41.9, "lng": 12.5, "chars": "ABCD", "label": "Latin｜拉丁" },
+            { "type": "arrow", "start": [42.8, 11], "end": [41.9, 12.5], "relation": "adaptation" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "greek-slavic",
+      "title": "希臘與斯拉夫文字",
+      "summary": "九世紀的傳教與翻譯活動催生 Glagolitic，Cyrillic 則以希臘字母為主要基礎。",
+      "category": "alphabet adaptation",
+      "color": "#6750a4",
+      "origin": { "lat": 41, "lng": 24 },
+      "sources": [
+        { "label": "Unicode Chapter 7：Cyrillic and Glagolitic", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-7/" }
+      ],
+      "steps": [
+        {
+          "period": "古典至中世紀",
+          "title": "希臘字母提供基礎字母庫",
+          "body": "希臘字母不只通往拉丁傳統，也成為多個東歐與宗教書寫傳統的參照。改編者需要為斯拉夫語中希臘語沒有的聲音設計表記方式。",
+          "relation": "文化與字母資源",
+          "map": { "center": [41, 24], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 38.5, "lng": 22, "chars": "ΑΒΓΔ", "label": "Greek｜希臘" }
+          ]
+        },
+        {
+          "period": "約862年起",
+          "title": "Glagolitic：早期斯拉夫字母",
+          "body": "Glagolitic 通常被認為由聖西里爾在九世紀左右為翻譯斯拉夫語宗教文本而設計。其排序與希臘字母關係密切，但許多字形並不是希臘字母的直接翻版。",
+          "relation": "受希臘傳統影響的創制",
+          "map": { "center": [42.5, 21], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 38.5, "lng": 22, "chars": "ΑΒΓΔ", "label": "Greek" },
+            { "type": "node", "lat": 43.9, "lng": 20.5, "chars": "ⰀⰁⰂⰃ", "label": "Glagolitic｜格拉哥里" },
+            { "type": "arrow", "start": [38.5, 22], "end": [43.9, 20.5], "relation": "context" }
+          ]
+        },
+        {
+          "period": "9世紀後期起",
+          "title": "Cyrillic：以希臘字母為主要基礎",
+          "body": "Cyrillic 以希臘字母為核心，並加入表記斯拉夫語音系所需的字母。後來它被許多語言採用，各語言又形成自己的擴充字母與正字法。",
+          "relation": "借用後擴充",
+          "map": { "center": [48, 29], "zoom": 4 },
+          "layers": [
+            { "type": "node", "lat": 38.5, "lng": 22, "chars": "ΑΒΓΔ", "label": "Greek" },
+            { "type": "node", "lat": 42.7, "lng": 23.3, "chars": "АБВГ", "label": "Early Cyrillic｜早期西里爾" },
+            { "type": "arrow", "start": [38.5, 22], "end": [42.7, 23.3], "relation": "adaptation" },
+            { "type": "node", "lat": 55.8, "lng": 37.6, "chars": "АБВГ", "label": "Modern Cyrillic traditions" },
+            { "type": "arrow", "start": [42.7, 23.3], "end": [55.8, 37.6], "relation": "descent" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aramaic-branches",
+      "title": "亞蘭文字的多條分支",
+      "summary": "帝國亞蘭文字在西亞成為重要書寫傳統，與希伯來、敘利亞、納巴泰及阿拉伯文字譜系相連。",
+      "category": "abjad lineages",
+      "color": "#b55a30",
+      "origin": { "lat": 34.5, "lng": 40 },
+      "sources": [
+        { "label": "Unicode Chapter 10：Imperial Aramaic and Nabataean", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-10/" },
+        { "label": "Unicode Chapter 9：Hebrew, Arabic and Syriac", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-9/" }
+      ],
+      "steps": [
+        {
+          "period": "前1千紀",
+          "title": "帝國亞蘭文字：跨區域的行政書寫",
+          "body": "亞蘭文字由腓尼基傳統發展而來，在阿契美尼德帝國時期成為廣泛使用的行政文字。它的影響不是一條單線，而是形成多個地區性的書寫分支。",
+          "relation": "由腓尼基傳統發展",
+          "map": { "center": [34, 38], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 33.8, "lng": 35.5, "chars": "𐤀𐤁𐤂𐤃", "label": "Phoenician" },
+            { "type": "node", "lat": 34.5, "lng": 40, "chars": "𐡀𐡁𐡂𐡃", "label": "Imperial Aramaic｜帝國亞蘭" },
+            { "type": "arrow", "start": [33.8, 35.5], "end": [34.5, 40], "relation": "descent" }
+          ]
+        },
+        {
+          "period": "古代晚期以前後",
+          "title": "希伯來與敘利亞傳統",
+          "body": "方體希伯來文字與亞蘭文字傳統相關；敘利亞文則用於敘利亞語及其他若干語言。兩者後來都發展出標示元音或誦讀資訊的附加符號。",
+          "relation": "同源分支，不是現代字形彼此衍生",
+          "map": { "center": [33.5, 37], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 34.5, "lng": 40, "chars": "𐡀𐡁𐡂𐡃", "label": "Aramaic tradition" },
+            { "type": "node", "lat": 31.8, "lng": 35.2, "chars": "אבגד", "label": "Hebrew｜希伯來" },
+            { "type": "arrow", "start": [34.5, 40], "end": [31.8, 35.2], "relation": "descent" },
+            { "type": "node", "lat": 36, "lng": 38, "chars": "ܐܒܓܕ", "label": "Syriac｜敘利亞" },
+            { "type": "arrow", "start": [34.5, 40], "end": [36, 38], "relation": "descent" }
+          ]
+        },
+        {
+          "period": "前2世紀至西元7世紀前後",
+          "title": "納巴泰文字與阿拉伯文字",
+          "body": "納巴泰文字由亞蘭文字發展，通常被視為阿拉伯文字的重要前身。阿拉伯文字後來形成連寫與位置變體等鮮明特徵，並被多種非阿拉伯語言採用。",
+          "relation": "文字譜系與後續擴展",
+          "map": { "center": [29, 40], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 34.5, "lng": 40, "chars": "𐡀𐡁𐡂𐡃", "label": "Aramaic" },
+            { "type": "node", "lat": 30.3, "lng": 35.4, "chars": "𐢀𐢁𐢂𐢃", "label": "Nabataean｜納巴泰" },
+            { "type": "arrow", "start": [34.5, 40], "end": [30.3, 35.4], "relation": "descent" },
+            { "type": "node", "lat": 24.7, "lng": 46.7, "chars": "ابجد", "label": "Arabic｜阿拉伯" },
+            { "type": "arrow", "start": [30.3, 35.4], "end": [24.7, 46.7], "relation": "descent" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brahmi-family",
+      "title": "婆羅米文字家族",
+      "summary": "古代婆羅米文字衍生出南亞與東南亞眾多文字；共同原理之下仍有多條複雜支系。",
+      "category": "abugida lineages",
+      "color": "#9a6b13",
+      "origin": { "lat": 23, "lng": 78 },
+      "sources": [
+        { "label": "Unicode Chapter 14：Brahmi", "url": "https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-14/" },
+        { "label": "Unicode Chapter 12：Indic scripts", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-12/" },
+        { "label": "Unicode Chapter 16：Southeast Asian scripts", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-16/" }
+      ],
+      "steps": [
+        {
+          "period": "至少前3世紀已有材料",
+          "title": "婆羅米文字：多個文字家族的歷史源頭",
+          "body": "婆羅米文字見於古代印度碑銘。其後續傳統通常以帶有固有元音的輔音字母為核心，再利用元音符號、virama 或其他機制改變音節結構。",
+          "relation": "歷史起點；更早起源仍有討論",
+          "map": { "center": [23, 78], "zoom": 4 },
+          "layers": [
+            { "type": "node", "lat": 23, "lng": 78, "chars": "𑀅𑀓𑀢𑀧", "label": "Brahmi｜婆羅米" }
+          ]
+        },
+        {
+          "period": "第一千紀至今",
+          "title": "南亞的多條區域支系",
+          "body": "Devanagari、孟加拉、古吉拉特、泰米爾、泰盧固等文字共享婆羅米系的歷史與若干結構原理，但並非全部由現代 Devanagari 彼此演變。",
+          "relation": "共同祖源下的多分支",
+          "map": { "center": [19, 79], "zoom": 4 },
+          "layers": [
+            { "type": "node", "lat": 23, "lng": 78, "chars": "𑀅𑀓𑀢𑀧", "label": "Brahmi traditions" },
+            { "type": "node", "lat": 26, "lng": 80, "chars": "अकतप", "label": "Devanagari｜天城文" },
+            { "type": "arrow", "start": [23, 78], "end": [26, 80], "relation": "descent" },
+            { "type": "node", "lat": 12, "lng": 79.5, "chars": "அகதப", "label": "Tamil｜泰米爾" },
+            { "type": "arrow", "start": [23, 78], "end": [12, 79.5], "relation": "descent" }
+          ]
+        },
+        {
+          "period": "第一千紀中後期起",
+          "title": "向東南亞傳播與在地化",
+          "body": "南印度婆羅米系文字隨宗教與跨區交流傳入東南亞，形成高棉等區域文字傳統；泰文、寮文等又與古高棉系統有密切歷史關係。圖中省略許多中間字體，不能理解成一步直達。",
+          "relation": "跨區傳播；中間階段省略",
+          "map": { "center": [16, 94], "zoom": 4 },
+          "layers": [
+            { "type": "node", "lat": 12, "lng": 79.5, "chars": "𑀓 → க", "label": "South Indian traditions" },
+            { "type": "node", "lat": 13, "lng": 104, "chars": "កខគឃ", "label": "Khmer｜高棉" },
+            { "type": "arrow", "start": [12, 79.5], "end": [13, 104], "relation": "descent" },
+            { "type": "node", "lat": 15.5, "lng": 101, "chars": "กขคฆ", "label": "Thai｜泰文" },
+            { "type": "arrow", "start": [13, 104], "end": [15.5, 101], "relation": "adaptation" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "east-asian-writing",
+      "title": "東亞書寫文化圈",
+      "summary": "漢字被不同語言借用；日文假名由漢字材料發展，Hangul 則不是漢字字形的後代。",
+      "category": "borrowing, adaptation, invention",
+      "color": "#2d7f68",
+      "origin": { "lat": 34, "lng": 108 },
+      "sources": [
+        { "label": "Unicode Chapter 18：East Asia", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-18/" },
+        { "label": "Unicode Chapter 6：Logosyllabaries", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-6/" }
+      ],
+      "steps": [
+        {
+          "period": "前2千紀已有早期材料",
+          "title": "漢字：延續發展的語素音節文字",
+          "body": "漢字主要以字記錄語素，字也通常對應音節。從早期材料到今日，字形、字彙、書體與使用規則都持續變化，因此不能把現代字形直接等同於最早形態。",
+          "relation": "東亞重要文字傳統",
+          "map": { "center": [34, 108], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 34, "lng": 108, "chars": "天地玄黃", "label": "Han｜漢字" }
+          ]
+        },
+        {
+          "period": "古代至近世",
+          "title": "借用漢字書寫不同語言",
+          "body": "日本、朝鮮半島與越南都曾借用漢字書寫本地語言。日文平假名源於草書化漢字，片假名多取漢字的一部分；越南字喃則運用漢字與仿漢字造字原理。",
+          "relation": "借用與改造，不是語言親緣",
+          "map": { "center": [29, 122], "zoom": 4 },
+          "layers": [
+            { "type": "node", "lat": 34, "lng": 108, "chars": "漢字", "label": "Han tradition" },
+            { "type": "node", "lat": 35, "lng": 139, "chars": "あア", "label": "Kana｜假名" },
+            { "type": "arrow", "start": [34, 108], "end": [35, 139], "relation": "adaptation" },
+            { "type": "node", "lat": 21, "lng": 105, "chars": "字喃", "label": "Chữ Nôm｜字喃" },
+            { "type": "arrow", "start": [34, 108], "end": [21, 105], "relation": "adaptation" }
+          ]
+        },
+        {
+          "period": "15世紀創制",
+          "title": "Hangul：文化圈內的獨立字母設計",
+          "body": "Hangul 在朝鮮王朝世宗時期為韓語創制。其 jamo 組合成音節方塊，視覺上能與漢字並排，但 Unicode 明確指出 jamo 的形狀並非直接受到漢字字形影響。",
+          "relation": "文化環境相關；不是漢字字形後代",
+          "map": { "center": [36, 120], "zoom": 4 },
+          "layers": [
+            { "type": "node", "lat": 34, "lng": 108, "chars": "漢字", "label": "Han cultural context" },
+            { "type": "node", "lat": 37.5, "lng": 127, "chars": "가나다라", "label": "Hangul｜한글" },
+            { "type": "arrow", "start": [34, 108], "end": [37.5, 127], "relation": "context" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "designed-scripts",
+      "title": "近代有意識創制的文字",
+      "summary": "Cherokee、Vai、N’Ko 顯示文字不只靠古老譜系傳承，也會由個人或社群主動設計。",
+      "category": "independent invention",
+      "color": "#8b3f64",
+      "origin": { "lat": 7.5, "lng": -10.8 },
+      "sources": [
+        { "label": "Unicode Chapter 20：Cherokee", "url": "https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-20/" },
+        { "label": "Unicode Chapter 19：N’Ko and Vai", "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-19/" }
+      ],
+      "steps": [
+        {
+          "period": "1815–1821年",
+          "title": "Cherokee：Sequoyah 的音節文字",
+          "body": "Sequoyah 為 Cherokee 語創制音節文字。部分印刷字形看似拉丁字母，但其讀音與功能不能依拉丁字母猜測；外形相似不代表同一字母。",
+          "relation": "有意識創制",
+          "map": { "center": [35.5, -84], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 35.5, "lng": -84, "chars": "ᎠᎡᎢᎣ", "label": "Cherokee｜切羅基" }
+          ]
+        },
+        {
+          "period": "1830年代",
+          "title": "Vai：西非發展出的音節文字",
+          "body": "Vai 文字主要由 Mọmọlu Duwalu Bukẹlẹ 在今日賴比瑞亞一帶發展，用於 Vai 語。其後社群建立教學與使用傳統，說明文字創制也需要社會制度才能延續。",
+          "relation": "社群採用的創制文字",
+          "map": { "center": [7.5, -10.8], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 7.5, "lng": -10.8, "chars": "ꔀꔁꔂꔃ", "label": "Vai｜瓦伊" }
+          ]
+        },
+        {
+          "period": "1949年",
+          "title": "N’Ko：為曼德語言設計的字母",
+          "body": "Solomana Kanté 在1949年為曼德語言設計 N’Ko。它由右向左書寫，以字母記錄音段，並用附加符號標記聲調與鼻化，顯示新文字可以針對語言結構進行系統設計。",
+          "relation": "有意識創制；非阿拉伯文字分支",
+          "map": { "center": [10, -10.5], "zoom": 5 },
+          "layers": [
+            { "type": "node", "lat": 10, "lng": -10.5, "chars": "ߊߓߕߞ", "label": "N’Ko｜恩科" }
+          ]
+        }
+      ]
+    }
+  ]
+}
