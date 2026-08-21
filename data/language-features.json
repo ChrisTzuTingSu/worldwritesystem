@@ -1,0 +1,103 @@
+{
+  "version": "1.0",
+  "methodNote": "卡片只呈現入門層級的常見結構。『文法性別』指名詞分類能觸發冠詞、形容詞或其他成分的一致關係，不等同生物性別；語序與音值也可能因句型、地區和語體而變化。",
+  "sharedSources": [
+    { "label": "WALS：Number of Genders", "url": "https://wals.info/chapter/30" },
+    { "label": "WALS：Tone", "url": "https://wals.info/chapter/13" },
+    { "label": "WALS：Order of Subject, Object and Verb", "url": "https://wals.info/chapter/81" },
+    { "label": "WALS：Numeral Classifiers", "url": "https://wals.info/chapter/55" }
+  ],
+  "languages": [
+    {
+      "id": "thai",
+      "name": "泰語",
+      "nativeName": "ภาษาไทย",
+      "family": "壯侗語系 · 台語支",
+      "script": "泰文；婆羅米系元音附標文字",
+      "wordOrder": "基本語序常見 SVO",
+      "gender": "沒有法語式的文法性別一致系統",
+      "morphology": "偏分析型；語法關係大量依靠語序與功能詞",
+      "highlights": ["複雜聲調系統", "量詞／分類詞", "敬語粒子", "輔音等級參與聲調拼讀"],
+      "example": "แมวสองตัว · 貓＋二＋分類詞（兩隻貓）",
+      "source": "https://wals.info/languoid/lect/wals_code_tha"
+    },
+    {
+      "id": "vietnamese",
+      "name": "越南語",
+      "nativeName": "Tiếng Việt",
+      "family": "南亞語系 · 越語支",
+      "script": "拉丁字母國語字；字母與聲調附加符號可疊加",
+      "wordOrder": "基本語序常見 SVO",
+      "gender": "沒有名詞文法性別一致系統",
+      "morphology": "高度分析型；詞形變化少",
+      "highlights": ["複雜聲調系統", "量詞／分類詞", "親屬詞常作人稱稱謂", "地區音系差異"],
+      "example": "hai con mèo · 二＋分類詞＋貓（兩隻貓）",
+      "source": "https://wals.info/languoid/lect/wals_code_vie"
+    },
+    {
+      "id": "french",
+      "name": "法語",
+      "nativeName": "Français",
+      "family": "印歐語系 · 羅曼語族",
+      "script": "拉丁字母與變音符號",
+      "wordOrder": "陳述句基本語序常見 SVO",
+      "gender": "兩個文法性別：陽性與陰性",
+      "morphology": "屈折與分析結構並存",
+      "highlights": ["冠詞與形容詞一致", "動詞人稱變化", "連音", "大量不發音字母"],
+      "example": "un petit livre / une petite maison · 冠詞與形容詞隨名詞性別變化",
+      "source": "https://wals.info/languoid/lect/wals_code_fre"
+    },
+    {
+      "id": "german",
+      "name": "德語",
+      "nativeName": "Deutsch",
+      "family": "印歐語系 · 日耳曼語族",
+      "script": "拉丁字母；含 ä ö ü ß",
+      "wordOrder": "主句常見動詞第二位；從句常見動詞後置",
+      "gender": "三個文法性別：陽性、陰性、中性",
+      "morphology": "屈折型；格、數、性參與一致",
+      "highlights": ["四個格", "冠詞變化", "名詞首字母大寫", "可分動詞"],
+      "example": "der / die / das · 三種定冠詞的主格單數形式",
+      "source": "https://wals.info/languoid/lect/wals_code_ger"
+    },
+    {
+      "id": "japanese",
+      "name": "日語",
+      "nativeName": "日本語",
+      "family": "日本語族",
+      "script": "漢字＋平假名＋片假名＋拉丁字母",
+      "wordOrder": "基本語序常見 SOV；修飾語在被修飾語之前",
+      "gender": "沒有名詞文法性別一致系統",
+      "morphology": "黏著型；助詞標示句法角色",
+      "highlights": ["拍節奏", "助詞", "敬語系統", "主語常可省略"],
+      "example": "私は本を読む · 我＋主題＋書＋受詞＋讀",
+      "source": "https://wals.info/languoid/lect/wals_code_jpn"
+    },
+    {
+      "id": "korean",
+      "name": "韓語",
+      "nativeName": "한국어",
+      "family": "韓語系",
+      "script": "Hangul 字母組成音節方塊；有限場合使用漢字",
+      "wordOrder": "基本語序常見 SOV",
+      "gender": "沒有名詞文法性別一致系統",
+      "morphology": "黏著型；詞尾承載大量語法資訊",
+      "highlights": ["主題與格助詞", "敬語與語體等級", "音節方塊", "連音與音韻交替"],
+      "example": "저는 책을 읽어요 · 我＋主題＋書＋受詞＋讀",
+      "source": "https://wals.info/languoid/lect/wals_code_kor"
+    },
+    {
+      "id": "mandarin",
+      "name": "華語",
+      "nativeName": "現代標準漢語",
+      "family": "漢藏語系 · 漢語族",
+      "script": "漢字；注音或漢語拼音可作標音工具",
+      "wordOrder": "基本語序常見 SVO",
+      "gender": "沒有名詞文法性別一致系統",
+      "morphology": "高度分析型；詞形變化少",
+      "highlights": ["聲調", "量詞／分類詞", "話題突出", "漢字主要記錄語素與音節"],
+      "example": "兩隻貓 · 數量＋分類詞＋名詞",
+      "source": "https://wals.info/languoid/lect/wals_code_mnd"
+    }
+  ]
+}
