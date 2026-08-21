@@ -228,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const practiceLanguageGuide = document.getElementById('practice-language-guide');
         const practiceStrokes = document.getElementById('practice-strokes');
         const practiceGuide = document.getElementById('practice-guide');
+        const practiceGlyph = document.getElementById('practice-glyph');
         const practiceCanvas = document.getElementById('practice-canvas');
         const practiceBoard = document.getElementById('practice-board');
         const practiceStatus = document.getElementById('practice-status');
@@ -236,6 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggleGuideButton = document.getElementById('practice-toggle-guide');
         const clearButton = document.getElementById('practice-clear');
         const svgNamespace = 'http://www.w3.org/2000/svg';
+        const glyphMeasureContext = document.createElement('canvas').getContext('2d');
         let practiceData;
         let featureData;
         let currentLanguage;
@@ -308,25 +310,78 @@ document.addEventListener('DOMContentLoaded', () => {
             circle.setAttribute('cx', stroke.start[0]);
             circle.setAttribute('cy', stroke.start[1]);
             circle.setAttribute('r', '13');
+            circle.dataset.startX = stroke.start[0];
+            circle.dataset.startY = stroke.start[1];
             practiceStrokes.appendChild(circle);
 
             const number = document.createElementNS(svgNamespace, 'text');
             number.setAttribute('class', 'practice-start-number');
             number.setAttribute('x', stroke.start[0]);
             number.setAttribute('y', stroke.start[1] + 5);
+            number.dataset.startX = stroke.start[0];
+            number.dataset.startY = stroke.start[1];
             number.textContent = String(index + 1);
             practiceStrokes.appendChild(number);
+        }
+
+        function alignStrokeGuidesToGlyph() {
+            const paths = [...practiceStrokes.querySelectorAll('.practice-stroke')];
+            if (!paths.length) return;
+            const glyphStyle = getComputedStyle(practiceGlyph);
+            glyphMeasureContext.font = `${glyphStyle.fontWeight} ${glyphStyle.fontSize} ${glyphStyle.fontFamily}`;
+            glyphMeasureContext.textAlign = 'center';
+            const glyphMetrics = glyphMeasureContext.measureText(practiceGlyph.textContent);
+            const glyphBox = {
+                x: 160 - glyphMetrics.actualBoundingBoxLeft,
+                y: 244 - glyphMetrics.actualBoundingBoxAscent,
+                width: glyphMetrics.actualBoundingBoxLeft + glyphMetrics.actualBoundingBoxRight,
+                height: glyphMetrics.actualBoundingBoxAscent + glyphMetrics.actualBoundingBoxDescent
+            };
+            const boxes = paths.map(path => path.getBBox());
+            const pathBox = boxes.reduce((box, item) => ({
+                x: Math.min(box.x, item.x),
+                y: Math.min(box.y, item.y),
+                right: Math.max(box.right, item.x + item.width),
+                bottom: Math.max(box.bottom, item.y + item.height)
+            }), {
+                x: boxes[0].x,
+                y: boxes[0].y,
+                right: boxes[0].x + boxes[0].width,
+                bottom: boxes[0].y + boxes[0].height
+            });
+            pathBox.width = Math.max(1, pathBox.right - pathBox.x);
+            pathBox.height = Math.max(1, pathBox.bottom - pathBox.y);
+            const scaleX = glyphBox.width * .84 / pathBox.width;
+            const scaleY = glyphBox.height * .84 / pathBox.height;
+            const offsetX = glyphBox.x + (glyphBox.width - pathBox.width * scaleX) / 2 - pathBox.x * scaleX;
+            const offsetY = glyphBox.y + (glyphBox.height - pathBox.height * scaleY) / 2 - pathBox.y * scaleY;
+            const transform = `matrix(${scaleX} 0 0 ${scaleY} ${offsetX} ${offsetY})`;
+            paths.forEach(path => path.setAttribute('transform', transform));
+            practiceStrokes.querySelectorAll('[data-start-x]').forEach(marker => {
+                const x = Number(marker.dataset.startX) * scaleX + offsetX;
+                const y = Number(marker.dataset.startY) * scaleY + offsetY;
+                if (marker.tagName === 'circle') {
+                    marker.setAttribute('cx', x);
+                    marker.setAttribute('cy', y);
+                } else {
+                    marker.setAttribute('x', x);
+                    marker.setAttribute('y', y + 5);
+                }
+            });
         }
 
         function updatePracticeItem(item) {
             currentItem = item;
             document.getElementById('practice-name').textContent = item.name;
             document.getElementById('practice-character').textContent = item.char;
+            practiceGlyph.textContent = item.char;
+            practiceGuide.dataset.language = currentLanguage.id;
             document.getElementById('practice-sound').textContent = item.sound;
             document.getElementById('practice-example').textContent = item.example;
             document.getElementById('practice-note').textContent = item.note;
             practiceStrokes.replaceChildren();
             item.strokes.forEach(addStroke);
+            requestAnimationFrame(alignStrokeGuidesToGlyph);
             practiceCharacterTabs.querySelectorAll('button').forEach(button => {
                 const isActive = button.dataset.char === item.char;
                 button.classList.toggle('active', isActive);
