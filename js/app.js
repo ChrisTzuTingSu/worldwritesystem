@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentLanguage;
         let currentItem;
         let guideVisible = true;
+        let motionHideTimer;
 
         try {
             const [practiceResponse, featureResponse] = await Promise.all([
@@ -381,13 +382,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('practice-note').textContent = item.note;
             practiceStrokes.replaceChildren();
             item.strokes.forEach(addStroke);
+            clearTimeout(motionHideTimer);
+            practiceStrokes.classList.add('motion-hidden');
             requestAnimationFrame(alignStrokeGuidesToGlyph);
             practiceCharacterTabs.querySelectorAll('button').forEach(button => {
                 const isActive = button.dataset.char === item.char;
                 button.classList.toggle('active', isActive);
                 button.setAttribute('aria-pressed', String(isActive));
             });
-            clearCanvas('可用手指、觸控筆或滑鼠沿灰色線條描摹。');
+            clearCanvas('可用手指、觸控筆或滑鼠沿單一淺灰字形描摹。');
         }
 
         function renderCharacterTabs(language) {
@@ -434,6 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
         animateButton.addEventListener('click', () => {
             const paths = [...practiceStrokes.querySelectorAll('.practice-stroke')];
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            clearTimeout(motionHideTimer);
+            practiceStrokes.classList.remove('motion-hidden');
             let delay = 0;
             paths.forEach(path => {
                 path.getAnimations().forEach(animation => animation.cancel());
@@ -445,7 +450,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ], { duration, delay, easing: 'ease-in-out', fill: 'both' });
                 delay += duration + (reduceMotion ? 0 : 180);
             });
-            practiceStatus.textContent = `正在依序播放 ${paths.length} 個筆勢。`;
+            practiceStatus.textContent = `正在依序播放 ${paths.length} 個簡化筆勢示意。`;
+            motionHideTimer = window.setTimeout(() => {
+                practiceStrokes.classList.add('motion-hidden');
+                practiceStatus.textContent = '筆勢示意已隱藏，可沿單一淺灰字形繼續描摹。';
+            }, delay + 600);
         });
 
         toggleGuideButton.addEventListener('click', () => {

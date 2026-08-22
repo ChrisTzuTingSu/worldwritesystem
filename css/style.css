@@ -431,10 +431,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .practice-grid-line { stroke: #d9e4e8; stroke-width: 2; stroke-dasharray: 7 8; }
 .practice-grid-border { fill: none; stroke: #cbd9df; stroke-width: 2; }
 .practice-glyph {
-    fill: rgba(92, 115, 126, .10);
-    stroke: rgba(77, 101, 113, .42);
-    stroke-width: 2;
-    paint-order: stroke fill;
+    fill: rgba(77, 101, 113, .24);
+    stroke: none;
     font-family: Tahoma, "Noto Sans Thai", "Noto Sans", Arial, sans-serif;
     font-size: 224px;
     font-weight: 500;
@@ -446,10 +444,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .practice-stroke { fill: none; stroke: #247993; stroke-width: 5; stroke-dasharray: 4 9; stroke-linecap: round; stroke-linejoin: round; opacity: .72; }
 .practice-start { fill: #16806d; stroke: #fff; stroke-width: 2; }
 .practice-start-number { fill: #fff; font: 700 14px system-ui, sans-serif; text-anchor: middle; pointer-events: none; }
+#practice-strokes { transition: opacity .2s ease; }
+#practice-strokes.motion-hidden { opacity: 0; }
 .practice-guide-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .55rem 1rem; margin-top: .75rem; color: #607580; font-size: .78rem; }
 .practice-guide-legend span { display: inline-flex; align-items: center; gap: .4rem; }
 .practice-guide-legend i { display: inline-block; width: 25px; height: 10px; border-radius: 3px; }
-.glyph-legend { background: rgba(92, 115, 126, .12); border: 1px solid rgba(77, 101, 113, .42); }
+.glyph-legend { background: rgba(77, 101, 113, .24); }
 .motion-legend { height: 0 !important; border-top: 3px dashed #247993; border-radius: 0 !important; }
 .practice-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: .65rem; margin-top: 1rem; }
 .practice-controls button { min-height: 44px; padding: .65rem 1rem; border: 1px solid #cdd9de; border-radius: 999px; background: #fff; color: #29495a; cursor: pointer; }
