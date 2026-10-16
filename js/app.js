@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initLearningLab() {
         const practiceLanguageTabs = document.getElementById('practice-language-tabs');
+        const practiceGroupTabs = document.getElementById('practice-group-tabs');
         const practiceCharacterTabs = document.getElementById('practice-character-tabs');
         const practiceLanguageGuide = document.getElementById('practice-language-guide');
         const practiceStrokes = document.getElementById('practice-strokes');
@@ -232,18 +233,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const practiceCanvas = document.getElementById('practice-canvas');
         const practiceBoard = document.getElementById('practice-board');
         const practiceStatus = document.getElementById('practice-status');
+        const practicePosition = document.getElementById('practice-position');
         const practiceSpeak = document.getElementById('practice-speak');
         const animateButton = document.getElementById('practice-animate');
         const toggleGuideButton = document.getElementById('practice-toggle-guide');
         const clearButton = document.getElementById('practice-clear');
+        const previousButton = document.getElementById('practice-previous');
+        const nextButton = document.getElementById('practice-next');
+        const masteredButton = document.getElementById('practice-mastered');
+        const progressText = document.getElementById('learning-progress-text');
+        const progressBar = document.getElementById('learning-progress-bar');
+        const progressTrack = document.querySelector('.progress-track');
+        const progressReset = document.getElementById('learning-progress-reset');
+        const wordLanguageTabs = document.getElementById('word-language-tabs');
+        const wordGrid = document.getElementById('word-grid');
+        const quizLanguageTabs = document.getElementById('quiz-language-tabs');
+        const quizStart = document.getElementById('quiz-start');
+        const quizStartPanel = document.getElementById('quiz-start-panel');
+        const quizQuestionPanel = document.getElementById('quiz-question-panel');
+        const quizSummary = document.getElementById('quiz-summary');
+        const quizCounter = document.getElementById('quiz-counter');
+        const quizQuestion = document.getElementById('quiz-question');
+        const quizListen = document.getElementById('quiz-listen');
+        const quizOptions = document.getElementById('quiz-options');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const quizNext = document.getElementById('quiz-next');
         const svgNamespace = 'http://www.w3.org/2000/svg';
         const glyphMeasureContext = document.createElement('canvas').getContext('2d');
         let practiceData;
         let featureData;
         let currentLanguage;
         let currentItem;
+        let currentItems = [];
+        let currentGroup = 'all';
+        let currentWordLanguage;
+        let currentQuizLanguage;
+        let quizItems = [];
+        let quizIndex = 0;
+        let quizCorrect = 0;
+        let quizAnswered = false;
         let guideVisible = true;
         let motionHideTimer;
+        const progressKey = 'worldwritesystem-learning-v2';
+        let learningProgress = loadProgress();
+
+        function loadProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(progressKey));
+                return saved && typeof saved === 'object'
+                    ? { letters: saved.letters || {}, words: saved.words || {}, quiz: saved.quiz || { correct: 0, total: 0 } }
+                    : { letters: {}, words: {}, quiz: { correct: 0, total: 0 } };
+            } catch (error) {
+                return { letters: {}, words: {}, quiz: { correct: 0, total: 0 } };
+            }
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(progressKey, JSON.stringify(learningProgress));
+            } catch (error) {
+                console.warn('Learning progress could not be saved', error);
+            }
+            updateProgressSummary();
+        }
 
         try {
             const [practiceResponse, featureResponse] = await Promise.all([
@@ -255,6 +307,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 practiceResponse.json(),
                 featureResponse.json()
             ]);
+            const itemFields = practiceData.itemFormat || ['char', 'group', 'name', 'sound', 'example', 'speak'];
+            const wordFields = practiceData.wordFormat || ['native', 'translation', 'category'];
+            practiceData.languages.forEach(language => {
+                language.items = language.items.map((entry, index) => {
+                    const item = Array.isArray(entry)
+                        ? Object.fromEntries(itemFields.map((field, fieldIndex) => [field, entry[fieldIndex]]))
+                        : { ...entry };
+                    const guide = language.guides?.[item.char] || {};
+                    return {
+                        ...item,
+                        id: `${language.id}-${item.group || 'all'}-${index}`,
+                        note: guide.note || item.note || '此字目前只提供實際字形描摹與例詞發音，尚未加入經審核的筆勢示意。',
+                        strokes: guide.strokes || item.strokes || []
+                    };
+                });
+                language.starterWords = (language.starterWords || []).map((entry, index) => {
+                    const word = Array.isArray(entry)
+                        ? Object.fromEntries(wordFields.map((field, fieldIndex) => [field, entry[fieldIndex]]))
+                        : { ...entry };
+                    return { ...word, id: `${language.id}-word-${index}` };
+                });
+            });
         } catch (error) {
             console.error('Learning data error:', error);
             document.getElementById('practice-view').innerHTML = '<div class="error-panel"><h3>互動資料載入失敗</h3><p>請確認兩個學習資料檔案已完整上傳。</p></div>';
@@ -274,7 +348,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     view.classList.toggle('active', isActive);
                     view.hidden = !isActive;
                 });
+                if (viewName === 'practice') requestAnimationFrame(sizeCanvas);
             });
+        });
+
+        function progressList(kind, languageId) {
+            if (!learningProgress[kind][languageId]) learningProgress[kind][languageId] = [];
+            return learningProgress[kind][languageId];
+        }
+
+        function hasProgress(kind, languageId, itemId) {
+            return progressList(kind, languageId).includes(itemId);
+        }
+
+        function toggleProgress(kind, languageId, itemId) {
+            const items = progressList(kind, languageId);
+            const index = items.indexOf(itemId);
+            if (index >= 0) items.splice(index, 1);
+            else items.push(itemId);
+            saveProgress();
+            return index < 0;
+        }
+
+        function updateProgressSummary() {
+            if (!practiceData) return;
+            const totals = practiceData.languages.reduce((summary, language) => {
+                summary.total += language.items.length + language.starterWords.length;
+                summary.done += language.items.filter(item => hasProgress('letters', language.id, item.id)).length;
+                summary.done += language.starterWords.filter(word => hasProgress('words', language.id, word.id)).length;
+                return summary;
+            }, { done: 0, total: 0 });
+            const percent = totals.total ? Math.round(totals.done / totals.total * 100) : 0;
+            progressText.textContent = `已學 ${totals.done}／${totals.total} 項 · 測驗 ${learningProgress.quiz.correct}／${learningProgress.quiz.total} 題答對`;
+            progressBar.style.width = `${percent}%`;
+            progressTrack.setAttribute('aria-valuenow', String(percent));
+            if (currentItem && currentLanguage) {
+                const learned = hasProgress('letters', currentLanguage.id, currentItem.id);
+                masteredButton.classList.toggle('learned', learned);
+                masteredButton.textContent = learned ? '已學會，可取消' : '標記已學';
+                masteredButton.setAttribute('aria-pressed', String(learned));
+            }
+        }
+
+        progressReset.addEventListener('click', () => {
+            if (!window.confirm('要清除這台裝置上的字母、單字與測驗紀錄嗎？')) return;
+            learningProgress = { letters: {}, words: {}, quiz: { correct: 0, total: 0 } };
+            saveProgress();
+            if (currentWordLanguage) renderWordCards(currentWordLanguage);
         });
 
         function clearCanvas(message = '已清除筆跡，可以重新描摹。') {
@@ -384,28 +504,61 @@ document.addEventListener('DOMContentLoaded', () => {
             item.strokes.forEach(addStroke);
             clearTimeout(motionHideTimer);
             practiceStrokes.classList.add('motion-hidden');
-            requestAnimationFrame(alignStrokeGuidesToGlyph);
+            if (item.strokes.length) requestAnimationFrame(alignStrokeGuidesToGlyph);
+            animateButton.disabled = item.strokes.length === 0;
+            animateButton.textContent = item.strokes.length ? '播放筆勢示意' : '目前沒有筆勢示意';
             practiceCharacterTabs.querySelectorAll('button').forEach(button => {
-                const isActive = button.dataset.char === item.char;
+                const isActive = button.dataset.itemId === item.id;
                 button.classList.toggle('active', isActive);
                 button.setAttribute('aria-pressed', String(isActive));
             });
-            clearCanvas('可用手指、觸控筆或滑鼠沿單一淺灰字形描摹。');
+            const itemIndex = currentItems.findIndex(candidate => candidate.id === item.id);
+            practicePosition.textContent = `${itemIndex + 1}／${currentItems.length} · ${currentLanguage.groups?.find(group => group.id === item.group)?.label || '字母練習'}`;
+            previousButton.disabled = currentItems.length < 2;
+            nextButton.disabled = currentItems.length < 2;
+            updateProgressSummary();
+            clearCanvas(item.strokes.length
+                ? '可沿單一淺灰字形描摹；藍色線只會在播放時短暫顯示。'
+                : '可沿單一淺灰字形描摹；此字目前不顯示未經審核的筆勢線。');
         }
 
-        function renderCharacterTabs(language) {
+        function renderCharacterTabs(language, group = 'all') {
+            currentGroup = group;
+            currentItems = group === 'all'
+                ? language.items
+                : language.items.filter(item => item.group === group);
             practiceCharacterTabs.replaceChildren();
-            language.items.forEach(item => {
+            currentItems.forEach(item => {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'practice-character-button';
-                button.dataset.char = item.char;
+                button.dataset.itemId = item.id;
                 button.textContent = item.char;
                 button.setAttribute('aria-label', `練習 ${item.name}`);
                 button.addEventListener('click', () => updatePracticeItem(item));
                 practiceCharacterTabs.appendChild(button);
             });
-            updatePracticeItem(language.items[0]);
+            if (currentItems.length) updatePracticeItem(currentItems[0]);
+        }
+
+        function renderGroupTabs(language) {
+            practiceGroupTabs.replaceChildren();
+            [{ id: 'all', label: `全部 · ${language.items.length}` }, ...(language.groups || [])].forEach((group, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = group.label;
+                button.classList.toggle('active', index === 0);
+                button.setAttribute('aria-pressed', String(index === 0));
+                button.addEventListener('click', () => {
+                    practiceGroupTabs.querySelectorAll('button').forEach(item => {
+                        const active = item === button;
+                        item.classList.toggle('active', active);
+                        item.setAttribute('aria-pressed', String(active));
+                    });
+                    renderCharacterTabs(language, group.id);
+                });
+                practiceGroupTabs.appendChild(button);
+            });
         }
 
         function selectPracticeLanguage(language) {
@@ -420,6 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sources.innerHTML = language.sources.map(source =>
                 `<li><a href="${escapeHTML(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)}</a></li>`
             ).join('');
+            renderGroupTabs(language);
             renderCharacterTabs(language);
         }
 
@@ -433,6 +587,22 @@ document.addEventListener('DOMContentLoaded', () => {
             practiceLanguageTabs.appendChild(button);
         });
         document.getElementById('practice-notice').textContent = practiceData.notice;
+
+        function stepPractice(direction) {
+            if (!currentItem || currentItems.length < 2) return;
+            const index = currentItems.findIndex(item => item.id === currentItem.id);
+            const nextIndex = (index + direction + currentItems.length) % currentItems.length;
+            updatePracticeItem(currentItems[nextIndex]);
+            practiceCharacterTabs.querySelector(`[data-item-id="${CSS.escape(currentItems[nextIndex].id)}"]`)?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        previousButton.addEventListener('click', () => stepPractice(-1));
+        nextButton.addEventListener('click', () => stepPractice(1));
+        masteredButton.addEventListener('click', () => {
+            if (!currentItem || !currentLanguage) return;
+            const learned = toggleProgress('letters', currentLanguage.id, currentItem.id);
+            practiceStatus.textContent = learned ? '已加入這台裝置的學習紀錄。' : '已從學習紀錄移除。';
+        });
 
         animateButton.addEventListener('click', () => {
             const paths = [...practiceStrokes.querySelectorAll('.practice-stroke')];
@@ -498,6 +668,158 @@ document.addEventListener('DOMContentLoaded', () => {
         practiceCanvas.addEventListener('lostpointercapture', finishDrawing);
         new ResizeObserver(sizeCanvas).observe(practiceBoard);
 
+        function setActiveLanguageButton(container, languageId) {
+            container.querySelectorAll('button').forEach(button => {
+                const active = button.dataset.language === languageId;
+                button.classList.toggle('active', active);
+                button.setAttribute('aria-pressed', String(active));
+            });
+        }
+
+        function addLanguageButtons(container, onSelect) {
+            practiceData.languages.forEach(language => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'practice-language-button';
+                button.dataset.language = language.id;
+                button.innerHTML = `<strong>${escapeHTML(language.name)}</strong><span>${escapeHTML(language.nativeName)}</span>`;
+                button.addEventListener('click', () => onSelect(language));
+                container.appendChild(button);
+            });
+        }
+
+        function renderWordCards(language) {
+            currentWordLanguage = language;
+            setActiveLanguageButton(wordLanguageTabs, language.id);
+            wordGrid.innerHTML = language.starterWords.map(word => {
+                const learned = hasProgress('words', language.id, word.id);
+                return `<article class="word-card${learned ? ' learned' : ''}" data-word-id="${escapeHTML(word.id)}">
+                    <span class="word-category">${escapeHTML(word.category)}</span>
+                    <h2 lang="${escapeHTML(language.langCode)}">${escapeHTML(word.native)}</h2>
+                    <p>${escapeHTML(word.translation)}</p>
+                    <div>
+                        <button type="button" data-word-speak="${escapeHTML(word.id)}">播放</button>
+                        <button type="button" data-word-master="${escapeHTML(word.id)}" aria-pressed="${String(learned)}">${learned ? '已學會' : '標記已學'}</button>
+                    </div>
+                </article>`;
+            }).join('');
+            wordGrid.querySelectorAll('[data-word-speak]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const word = language.starterWords.find(item => item.id === button.dataset.wordSpeak);
+                    if (word) window.speakText(word.native, language.langCode);
+                });
+            });
+            wordGrid.querySelectorAll('[data-word-master]').forEach(button => {
+                button.addEventListener('click', () => {
+                    toggleProgress('words', language.id, button.dataset.wordMaster);
+                    renderWordCards(language);
+                });
+            });
+        }
+
+        function shuffle(items) {
+            const copy = [...items];
+            for (let index = copy.length - 1; index > 0; index -= 1) {
+                const swapIndex = Math.floor(Math.random() * (index + 1));
+                [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+            }
+            return copy;
+        }
+
+        function selectQuizLanguage(language) {
+            currentQuizLanguage = language;
+            setActiveLanguageButton(quizLanguageTabs, language.id);
+            quizSummary.textContent = `${language.name}題庫含 ${language.items.length} 個字母與聲調練習項目。每回隨機抽五題。`;
+        }
+
+        function quizPool(language) {
+            const seen = new Set();
+            return language.items.filter(item => {
+                if (seen.has(item.char)) return false;
+                seen.add(item.char);
+                return true;
+            });
+        }
+
+        function startQuiz() {
+            if (!currentQuizLanguage) return;
+            quizItems = shuffle(quizPool(currentQuizLanguage)).slice(0, 5);
+            quizIndex = 0;
+            quizCorrect = 0;
+            quizStartPanel.hidden = true;
+            quizQuestionPanel.hidden = false;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const target = quizItems[quizIndex];
+            quizAnswered = false;
+            quizCounter.textContent = `第 ${quizIndex + 1}／${quizItems.length} 題`;
+            quizFeedback.textContent = '';
+            quizFeedback.className = 'quiz-feedback';
+            quizNext.hidden = true;
+            const listeningQuestion = quizIndex % 2 === 1;
+            const cue = target.name.replace(target.char, '').replace(/^\s*·?\s*/, '');
+            quizQuestion.textContent = listeningQuestion
+                ? '播放例詞後，選出它對應的練習字母。'
+                : `哪一個字母是「${cue}」？`;
+            quizListen.hidden = !listeningQuestion;
+            quizListen.onclick = () => window.speakText(target.speak, currentQuizLanguage.langCode);
+            const distractors = shuffle(quizPool(currentQuizLanguage).filter(item => item.char !== target.char)).slice(0, 3);
+            const options = shuffle([target, ...distractors]);
+            quizOptions.innerHTML = options.map(item =>
+                `<button type="button" data-answer="${escapeHTML(item.id)}" aria-label="選擇 ${escapeHTML(item.char)}">${escapeHTML(item.char)}</button>`
+            ).join('');
+            quizOptions.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', () => answerQuiz(button, target));
+            });
+        }
+
+        function answerQuiz(button, target) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+            const correct = button.dataset.answer === target.id;
+            quizOptions.querySelectorAll('button').forEach(option => {
+                option.disabled = true;
+                const isCorrect = option.dataset.answer === target.id;
+                option.classList.toggle('correct', isCorrect);
+                option.classList.toggle('wrong', option === button && !isCorrect);
+            });
+            learningProgress.quiz.total += 1;
+            if (correct) {
+                quizCorrect += 1;
+                learningProgress.quiz.correct += 1;
+                if (!hasProgress('letters', currentQuizLanguage.id, target.id)) {
+                    progressList('letters', currentQuizLanguage.id).push(target.id);
+                }
+                quizFeedback.textContent = `答對了。${target.example}`;
+                quizFeedback.classList.add('correct');
+            } else {
+                quizFeedback.textContent = `正確答案是 ${target.char}。${target.example}`;
+                quizFeedback.classList.add('wrong');
+            }
+            saveProgress();
+            quizNext.textContent = quizIndex === quizItems.length - 1 ? '查看結果' : '下一題';
+            quizNext.hidden = false;
+        }
+
+        function advanceQuiz() {
+            quizIndex += 1;
+            if (quizIndex < quizItems.length) {
+                renderQuizQuestion();
+                return;
+            }
+            quizQuestionPanel.hidden = true;
+            quizStartPanel.hidden = false;
+            quizSummary.textContent = `本回答對 ${quizCorrect}／${quizItems.length} 題。答對的字母已加入本機學習紀錄。`;
+            quizStart.textContent = '再挑戰一次';
+        }
+
+        addLanguageButtons(wordLanguageTabs, renderWordCards);
+        addLanguageButtons(quizLanguageTabs, selectQuizLanguage);
+        quizStart.addEventListener('click', startQuiz);
+        quizNext.addEventListener('click', advanceQuiz);
+
         function renderFeatureCards(filter = 'all') {
             const featureGrid = document.getElementById('feature-grid');
             const languages = filter === 'all'
@@ -514,7 +836,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </dl>
                     <div class="feature-tags">${language.highlights.map(item => `<span>${escapeHTML(item)}</span>`).join('')}</div>
                     <p class="feature-example">${escapeHTML(language.example)}</p>
-                    <a href="${escapeHTML(language.source)}" target="_blank" rel="noopener noreferrer">查看 WALS 語言頁 →</a>
+                    ${language.source ? `<a href="${escapeHTML(language.source)}" target="_blank" rel="noopener noreferrer">查看語言資料頁 →</a>` : ''}
                 </article>`).join('');
         }
 
@@ -537,7 +859,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ).join('');
 
         selectPracticeLanguage(practiceData.languages[0]);
+        renderWordCards(practiceData.languages[0]);
+        selectQuizLanguage(practiceData.languages[0]);
         renderFeatureCards();
+        updateProgressSummary();
         requestAnimationFrame(sizeCanvas);
     }
 
