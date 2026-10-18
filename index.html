@@ -58,7 +58,7 @@
                     <button data-go-to="history-map-section"><strong>6 條歷史傳播路徑</strong><span>區分文字傳承、借用改造與文化影響</span></button>
                     <button data-go-to="system-section"><strong>書寫原理分類</strong><span>比較 alphabet、abjad、abugida 等類型</span></button>
                     <button data-go-to="phonetics-section"><strong>語音學工具箱</strong><span>理解文字所記錄的聲音單位</span></button>
-                    <button data-go-to="learning-section"><strong>字形描摹與語言特色</strong><span>練習泰文、越南文字形，並比較性別、語序與聲調</span></button>
+                    <button data-go-to="learning-section"><strong>字母、單字與五題挑戰</strong><span>探索泰文 44 個輔音、越南文 29 個字母，並保存本機進度</span></button>
                 </section>
             </div>
         </section>
@@ -193,19 +193,34 @@
         <section id="learning-section" class="module-section">
             <div class="content-wrapper learning-wrapper">
                 <header class="section-intro learning-intro">
-                    <p class="eyebrow">TRACE · LISTEN · COMPARE</p>
-                    <h1>從手的動作，走進語言的結構</h1>
-                    <p>先跟著筆勢描摹與聆聽，再比較語序、聲調、分類詞和文法性別。這個練習不把不同語言硬套進同一種規則。</p>
+                    <p class="eyebrow">DISCOVER · TRACE · LISTEN · REVIEW</p>
+                    <h1>從字母、聲音到第一批生活單字</h1>
+                    <p>完整瀏覽泰文 44 個輔音與越南文 29 個字母，配合字形描摹、裝置發音、五題挑戰和本機學習紀錄。不同語言各自保留自己的結構，不硬套同一種拼讀規則。</p>
                 </header>
 
+                <section class="learning-progress" aria-labelledby="learning-progress-title">
+                    <div>
+                        <p class="nav-label" id="learning-progress-title">這台裝置的學習進度</p>
+                        <strong id="learning-progress-text">尚未開始</strong>
+                        <small>紀錄只存在目前瀏覽器，不需要登入。</small>
+                    </div>
+                    <div class="progress-track" role="progressbar" aria-label="字母與單字學習進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <span id="learning-progress-bar"></span>
+                    </div>
+                    <button id="learning-progress-reset" type="button">清除本機紀錄</button>
+                </section>
+
                 <div class="learning-view-tabs" role="tablist" aria-label="互動練習模式">
-                    <button class="learning-tab active" type="button" role="tab" aria-selected="true" data-learning-view="practice">字形描摹＋發音</button>
+                    <button class="learning-tab active" type="button" role="tab" aria-selected="true" data-learning-view="practice">字母探索</button>
+                    <button class="learning-tab" type="button" role="tab" aria-selected="false" data-learning-view="words">基礎單字</button>
+                    <button class="learning-tab" type="button" role="tab" aria-selected="false" data-learning-view="quiz">五題挑戰</button>
                     <button class="learning-tab" type="button" role="tab" aria-selected="false" data-learning-view="features">語言特色比較</button>
                 </div>
 
                 <div id="practice-view" class="learning-view active" role="tabpanel">
                     <div id="practice-language-tabs" class="practice-language-tabs" aria-label="選擇練習語言"></div>
                     <p id="practice-language-guide" class="practice-language-guide"></p>
+                    <div id="practice-group-tabs" class="practice-group-tabs" aria-label="篩選字母分組"></div>
                     <div id="practice-character-tabs" class="practice-character-tabs" aria-label="選擇練習字形"></div>
 
                     <div class="practice-layout">
@@ -215,7 +230,7 @@
                                     <p id="practice-name" class="practice-name"></p>
                                     <h2 id="practice-character"></h2>
                                 </div>
-                                <button id="practice-speak" class="icon-action" type="button">🔊 聽例詞</button>
+                                <button id="practice-speak" class="icon-action" type="button">播放例詞</button>
                             </div>
                             <div id="practice-board" class="practice-board">
                                 <svg id="practice-guide" viewBox="0 0 320 320" aria-label="筆勢描摹格">
@@ -223,20 +238,26 @@
                                     <line class="practice-grid-line" x1="20" y1="160" x2="300" y2="160"></line>
                                     <rect class="practice-grid-border" x="20" y="20" width="280" height="280" rx="16"></rect>
                                     <text id="practice-glyph" class="practice-glyph" x="160" y="244" aria-hidden="true"></text>
-                                    <g id="practice-strokes"></g>
+                                    <g id="practice-strokes" class="motion-hidden"></g>
                                 </svg>
                                 <canvas id="practice-canvas" aria-label="可用滑鼠或手指描摹的畫布"></canvas>
                             </div>
                             <div class="practice-guide-legend" aria-label="描摹圖例">
-                                <span><i class="glyph-legend"></i>淺灰底字：實際字型輪廓</span>
-                                <span><i class="motion-legend"></i>虛線：簡化筆勢方向</span>
+                                <span><i class="glyph-legend"></i>淺灰底字：實際字形</span>
+                                <span><i class="motion-legend"></i>播放時：簡化筆勢示意</span>
                             </div>
                             <div class="practice-controls">
-                                <button id="practice-animate" class="primary-action" type="button">▶ 播放筆勢</button>
+                                <button id="practice-previous" type="button">上一個</button>
+                                <button id="practice-mastered" class="mastery-action" type="button">標記已學</button>
+                                <button id="practice-next" type="button">下一個</button>
+                            </div>
+                            <div class="practice-controls secondary-controls">
+                                <button id="practice-animate" class="primary-action" type="button">播放筆勢示意</button>
                                 <button id="practice-toggle-guide" type="button">隱藏導引</button>
                                 <button id="practice-clear" type="button">清除筆跡</button>
                             </div>
-                            <p id="practice-status" class="practice-status" aria-live="polite">可用手指、觸控筆或滑鼠沿灰色線條描摹。</p>
+                            <p class="practice-position" id="practice-position"></p>
+                            <p id="practice-status" class="practice-status" aria-live="polite">可用手指、觸控筆或滑鼠沿單一淺灰字形描摹。</p>
                         </article>
 
                         <aside class="practice-info-card">
@@ -251,6 +272,37 @@
                             </details>
                         </aside>
                     </div>
+                </div>
+
+                <div id="words-view" class="learning-view" role="tabpanel" hidden>
+                    <div class="feature-explainer word-explainer">
+                        <strong>先認得、再聽見，不急著背拼音</strong>
+                        <p>每種語言先提供 12 個生活單字。按「播放」聽裝置語音，熟悉後可標記已學；不同地區口音與裝置聲音可能不同。</p>
+                    </div>
+                    <div id="word-language-tabs" class="practice-language-tabs" aria-label="選擇單字語言"></div>
+                    <div id="word-grid" class="word-grid"></div>
+                </div>
+
+                <div id="quiz-view" class="learning-view" role="tabpanel" hidden>
+                    <div class="feature-explainer quiz-explainer">
+                        <strong>每回五題，立即複習字母</strong>
+                        <p>題目從目前字母庫隨機產生；有些題目會先播放例詞，再請你選出正在練習的字母。答題紀錄只保存在目前瀏覽器。</p>
+                    </div>
+                    <div id="quiz-language-tabs" class="practice-language-tabs" aria-label="選擇測驗語言"></div>
+                    <article class="quiz-card">
+                        <div id="quiz-start-panel">
+                            <p id="quiz-summary">選擇語言後開始五題挑戰。</p>
+                            <button id="quiz-start" class="primary-action" type="button">開始挑戰</button>
+                        </div>
+                        <div id="quiz-question-panel" hidden>
+                            <p id="quiz-counter" class="nav-label"></p>
+                            <h2 id="quiz-question"></h2>
+                            <button id="quiz-listen" class="icon-action" type="button" hidden>播放題目發音</button>
+                            <div id="quiz-options" class="quiz-options"></div>
+                            <p id="quiz-feedback" class="quiz-feedback" aria-live="polite"></p>
+                            <button id="quiz-next" type="button" hidden>下一題</button>
+                        </div>
+                    </article>
                 </div>
 
                 <div id="features-view" class="learning-view" role="tabpanel" hidden>
