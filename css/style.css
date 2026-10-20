@@ -1,19 +1,20 @@
-/* 基礎版面重置與隱藏機制 (利用畫面外藏匿術，確保地圖引擎永不崩潰) */
+/* 基礎版面重置與模組顯示機制 */
 :root { --nav-height: 64px; --ink: #172b3a; --blue: #1676a8; --green: #16806d; }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8f9fa; color: #2c3e50; overflow-x: hidden; }
+html { min-height: 100%; scrollbar-gutter: stable; }
+body { min-height: 100%; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8f9fa; color: #2c3e50; overflow-x: hidden; }
 button { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 
 .module-section { 
     position: absolute; 
-    top: -9999px; /* 將模組推到畫面外，但保留其實體尺寸 */
-    left: -9999px; 
+    top: 0;
+    left: 0;
     width: 100%; 
-    height: calc(100vh - var(--nav-height));
-    height: calc(100dvh - var(--nav-height));
+    min-height: calc(100vh - var(--nav-height));
+    min-height: calc(100dvh - var(--nav-height));
     visibility: hidden; 
+    pointer-events: none;
 }
 
 .module-section.active { 
@@ -21,13 +22,22 @@ button, a { -webkit-tap-highlight-color: transparent; }
     top: 0; 
     left: 0; 
     visibility: visible; 
+    pointer-events: auto;
+}
+
+#modern-map-section,
+#history-map-section {
+    height: calc(100vh - var(--nav-height));
+    height: calc(100dvh - var(--nav-height));
+    overflow: hidden;
 }
 
 /* 頂部全局導覽列 */
 #global-nav {
     min-height: var(--nav-height);
     background: #1a252f;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1500;
 }
 .nav-shell {
@@ -90,8 +100,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 /* 內部容器佈局預設設定 */
 .content-wrapper {
     padding: 20px;
-    overflow-y: auto;
-    height: 100%;
+    min-height: calc(100vh - var(--nav-height));
+    min-height: calc(100dvh - var(--nav-height));
     box-sizing: border-box;
 }
 
@@ -102,6 +112,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
     width: 60%;
     height: 100%;
     z-index: 1;
+    background: #a8d6df;
 }
 
 #story-container {
@@ -424,16 +435,19 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .practice-group-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
 .practice-group-tabs button { min-height: 38px; padding: .45rem .75rem; border: 1px solid #cddae0; border-radius: 999px; background: #fff; color: #4f6876; cursor: pointer; }
 .practice-group-tabs button.active { border-color: #16806d; background: #e8f5f1; color: #126453; font-weight: 700; }
-.practice-character-tabs { display: flex; gap: .55rem; padding: .25rem 0 1rem; overflow-x: auto; scrollbar-width: thin; }
-.practice-character-button { flex: 0 0 52px; min-height: 52px; border: 1px solid #cedae0; border-radius: 12px; background: #fff; color: #264656; font-size: 1.5rem; cursor: pointer; }
+.practice-character-tabs { display: flex; gap: .55rem; padding: .25rem 0 1rem; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
+.practice-character-tabs::-webkit-scrollbar, .feature-filter::-webkit-scrollbar { display: none; }
+.practice-character-button { appearance: none; flex: 0 0 56px; min-height: 56px; display: grid; place-items: center; padding: .35rem; border: 1px solid #cedae0; border-radius: 12px; background: #fff; color: #264656; font-family: "Noto Sans Thai", Thonburi, "Leelawadee UI", Tahoma, "Noto Sans", Arial, sans-serif; font-size: 1.55rem; font-weight: 500; line-height: 1.35; overflow: visible; cursor: pointer; }
 .practice-character-button.active { background: #183f55; border-color: #183f55; color: #fff; }
 .practice-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(270px, .75fr); gap: 1rem; align-items: start; }
 .practice-stage-card, .practice-info-card, .feature-explainer, .feature-card { background: white; border: 1px solid #dce4e8; border-radius: 16px; box-shadow: 0 8px 24px rgba(27,55,70,.06); }
 .practice-stage-card { padding: clamp(1rem, 3vw, 1.5rem); }
 .practice-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
 .practice-name { margin: 0; color: #59717e; }
-.practice-heading h2 { margin: .15rem 0 0; color: #17384a; font-family: Tahoma, "Noto Sans Thai", "Noto Sans", Arial, sans-serif; font-size: clamp(2.8rem, 8vw, 5rem); line-height: 1; }
+.practice-heading h2 { margin: .15rem 0 0; color: #17384a; font-family: "Noto Sans Thai", Thonburi, "Leelawadee UI", Tahoma, "Noto Sans", Arial, sans-serif; font-size: clamp(2.8rem, 8vw, 5rem); font-weight: 500; line-height: 1.25; }
+.practice-audio-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem; }
 .icon-action { min-height: 44px; padding: .65rem .85rem; border: 1px solid #bfd3dc; border-radius: 999px; background: #edf7fa; color: #155f80; cursor: pointer; }
+.icon-action:disabled { cursor: not-allowed; opacity: .55; }
 .practice-board { position: relative; width: min(100%, 560px); aspect-ratio: 1; margin: 0 auto; overflow: hidden; border: 1px solid #d5e0e5; border-radius: 18px; background: #fbfdfd; touch-action: none; user-select: none; }
 #practice-guide, #practice-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 #practice-guide { transition: opacity .2s; pointer-events: none; }
@@ -442,29 +456,24 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .practice-grid-line { stroke: #d9e4e8; stroke-width: 2; stroke-dasharray: 7 8; }
 .practice-grid-border { fill: none; stroke: #cbd9df; stroke-width: 2; }
 .practice-glyph {
-    fill: rgba(77, 101, 113, .24);
-    stroke: none;
-    font-family: Tahoma, "Noto Sans Thai", "Noto Sans", Arial, sans-serif;
+    fill: rgba(77, 101, 113, .09);
+    stroke: rgba(72, 119, 139, .34);
+    stroke-width: 2;
+    paint-order: stroke fill;
+    vector-effect: non-scaling-stroke;
+    font-family: "Noto Sans Thai", Thonburi, "Leelawadee UI", Tahoma, "Noto Sans", Arial, sans-serif;
     font-size: 224px;
     font-weight: 500;
     text-anchor: middle;
 }
-#practice-guide[data-language="vietnamese"] .practice-glyph {
-    font-size: 210px;
-}
-.practice-stroke { fill: none; stroke: #247993; stroke-width: 5; stroke-dasharray: 4 9; stroke-linecap: round; stroke-linejoin: round; opacity: .72; }
-.practice-start { fill: #16806d; stroke: #fff; stroke-width: 2; }
-.practice-start-number { fill: #fff; font: 700 14px system-ui, sans-serif; text-anchor: middle; pointer-events: none; }
-#practice-strokes { transition: opacity .2s ease; }
-#practice-strokes.motion-hidden { opacity: 0; }
 .practice-guide-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .55rem 1rem; margin-top: .75rem; color: #607580; font-size: .78rem; }
 .practice-guide-legend span { display: inline-flex; align-items: center; gap: .4rem; }
 .practice-guide-legend i { display: inline-block; width: 25px; height: 10px; border-radius: 3px; }
 .glyph-legend { background: rgba(77, 101, 113, .24); }
-.motion-legend { height: 0 !important; border-top: 3px dashed #247993; border-radius: 0 !important; }
 .practice-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: .65rem; margin-top: 1rem; }
 .practice-controls button { min-height: 44px; padding: .65rem 1rem; border: 1px solid #cdd9de; border-radius: 999px; background: #fff; color: #29495a; cursor: pointer; }
 .practice-controls .primary-action { border-color: #1676a8; background: #1676a8; color: #fff; }
+.practice-controls .primary-action.is-off { border-color: #cdd9de; background: #fff; color: #526875; }
 .practice-controls button:disabled { cursor: not-allowed; opacity: .55; }
 .practice-controls .mastery-action { border-color: #8fbdae; }
 .practice-controls .mastery-action.learned { background: #16806d; border-color: #16806d; color: #fff; }
@@ -537,7 +546,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 @media (max-width: 760px) {
-    .module-section { height: calc(100vh - var(--nav-height)); height: calc(100dvh - var(--nav-height)); }
+    #modern-map-section, #history-map-section { height: calc(100vh - var(--nav-height)); height: calc(100dvh - var(--nav-height)); }
     .content-wrapper { padding: 16px; }
     .concept-strip, .home-grid { grid-template-columns: 1fr; }
     #leaflet-map-container { width: 100% !important; height: 42% !important; }
@@ -565,6 +574,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
     .learning-tab { border-radius: 10px; font-size: .88rem; }
     .practice-language-button { align-items: flex-start; flex-direction: column; gap: .15rem; }
     .practice-heading { align-items: flex-start; }
+    .practice-audio-actions { justify-content: flex-start; }
     .practice-heading h2 { font-size: 3.4rem; }
     .icon-action { font-size: .86rem; }
     .practice-controls button { flex: 1 1 42%; }
