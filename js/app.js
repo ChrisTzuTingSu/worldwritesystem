@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let svgMapInstance = null;
     let isLeafletMapInitialized = false;
+    let historyMapInitPromise = null;
     let isSystemLoaded = false;
     let isLearningLoaded = false;
 
@@ -43,7 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
             navButtons.forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
             sections.forEach(section => section.classList.remove('active'));
-            document.getElementById(targetId)?.classList.add('active');
+            const targetSection = document.getElementById(targetId);
+            targetSection?.classList.add('active');
+            targetSection?.querySelectorAll('.content-wrapper, #story-container').forEach(container => {
+                container.scrollTop = 0;
+            });
             navLinks?.classList.remove('open');
             navToggle?.setAttribute('aria-expanded', 'false');
             window.scrollTo({ top: 0, behavior: 'auto' });
@@ -69,11 +74,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetId === 'modern-map-section') {
             initModernMap();
         } else if (targetId === 'history-map-section') {
-            if (!isLeafletMapInitialized) {
-                initHistoryMap();
-                isLeafletMapInitialized = true;
-            } else {
+            if (isLeafletMapInitialized) {
                 window.leafletMapInstance?.invalidateSize();
+            } else if (!historyMapInitPromise) {
+                historyMapInitPromise = initHistoryMap()
+                    .then(initialized => {
+                        isLeafletMapInitialized = initialized;
+                        if (initialized) window.leafletMapInstance?.invalidateSize();
+                    })
+                    .catch(error => {
+                        console.error('History map initialization error:', error);
+                        window.leafletMapInstance?.remove();
+                        window.leafletMapInstance = null;
+                        const storyContainer = document.getElementById('story-container');
+                        storyContainer.classList.add('active');
+                        storyContainer.innerHTML = '<div class="history-error"><h2>互動地圖暫時無法顯示</h2><p>請檢查網路連線後，再切換到其他頁面並返回重試。</p></div>';
+                    })
+                    .finally(() => {
+                        historyMapInitPromise = null;
+                    });
             }
         } else if (targetId === 'system-section' && !isSystemLoaded) {
             window.loadSystemData?.('alphabet');
@@ -161,13 +180,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.speakText = function(text, lang) {
-        if (!synth || !lang) return;
-        synth.cancel();
-        const utterance = new SpeechSynthesisUtterance(String(text));
-        utterance.lang = lang;
-        utterance.rate = 0.8;
-        synth.speak(utterance);
+    window.speakText = function(text, lang, callbacks = {}) {
+        if (!synth || !lang || typeof window.SpeechSynthesisUtterance !== 'function') {
+            callbacks.onError?.();
+            return false;
+        }
+        try {
+            synth.cancel();
+            const utterance = new window.SpeechSynthesisUtterance(String(text));
+            const languageBase = String(lang).toLowerCase().split('-')[0];
+            const matchingVoice = synth.getVoices?.().find(voice =>
+                voice.lang.toLowerCase() === String(lang).toLowerCase()
+                || voice.lang.toLowerCase().split('-')[0] === languageBase
+            );
+            if (matchingVoice) utterance.voice = matchingVoice;
+            utterance.lang = lang;
+            utterance.rate = 0.78;
+            utterance.onstart = () => callbacks.onStart?.();
+            utterance.onend = () => callbacks.onEnd?.();
+            utterance.onerror = () => callbacks.onError?.();
+            synth.speak(utterance);
+            return true;
+        } catch (error) {
+            console.warn('Speech playback is unavailable', error);
+            callbacks.onError?.();
+            return false;
+        }
     };
 
     window.loadSystemData = async function(systemName) {
@@ -227,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const practiceGroupTabs = document.getElementById('practice-group-tabs');
         const practiceCharacterTabs = document.getElementById('practice-character-tabs');
         const practiceLanguageGuide = document.getElementById('practice-language-guide');
-        const practiceStrokes = document.getElementById('practice-strokes');
         const practiceGuide = document.getElementById('practice-guide');
         const practiceGlyph = document.getElementById('practice-glyph');
         const practiceCanvas = document.getElementById('practice-canvas');
@@ -235,7 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const practiceStatus = document.getElementById('practice-status');
         const practicePosition = document.getElementById('practice-position');
         const practiceSpeak = document.getElementById('practice-speak');
-        const animateButton = document.getElementById('practice-animate');
+        const practiceExampleSpeak = document.getElementById('practice-example-speak');
+        const autoSpeakButton = document.getElementById('practice-auto-speak');
         const toggleGuideButton = document.getElementById('practice-toggle-guide');
         const clearButton = document.getElementById('practice-clear');
         const previousButton = document.getElementById('practice-previous');
@@ -258,8 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const quizOptions = document.getElementById('quiz-options');
         const quizFeedback = document.getElementById('quiz-feedback');
         const quizNext = document.getElementById('quiz-next');
-        const svgNamespace = 'http://www.w3.org/2000/svg';
-        const glyphMeasureContext = document.createElement('canvas').getContext('2d');
         let practiceData;
         let featureData;
         let currentLanguage;
@@ -273,8 +309,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let quizCorrect = 0;
         let quizAnswered = false;
         let guideVisible = true;
-        let motionHideTimer;
+        let glyphFitRequest = 0;
         const progressKey = 'worldwritesystem-learning-v2';
+        const autoSpeakKey = 'worldwritesystem-auto-speak';
+        const speechSupported = Boolean(synth && typeof window.SpeechSynthesisUtterance === 'function');
+        let autoSpeakEnabled = speechSupported;
+        try {
+            autoSpeakEnabled = speechSupported && localStorage.getItem(autoSpeakKey) !== 'false';
+        } catch (error) {
+            console.warn('Audio preference could not be read', error);
+        }
         let learningProgress = loadProgress();
 
         function loadProgress() {
@@ -314,12 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const item = Array.isArray(entry)
                         ? Object.fromEntries(itemFields.map((field, fieldIndex) => [field, entry[fieldIndex]]))
                         : { ...entry };
-                    const guide = language.guides?.[item.char] || {};
                     return {
                         ...item,
                         id: `${language.id}-${item.group || 'all'}-${index}`,
-                        note: guide.note || item.note || '此字目前只提供實際字形描摹與例詞發音，尚未加入經審核的筆勢示意。',
-                        strokes: guide.strokes || item.strokes || []
+                        note: item.note || '描摹輪廓由畫面上同一套字型直接產生，因此會與底字重合；它用來練習字形，不宣稱是官方筆順。'
                     };
                 });
                 language.starterWords = (language.starterWords || []).map((entry, index) => {
@@ -419,94 +461,90 @@ document.addEventListener('DOMContentLoaded', () => {
             context.strokeStyle = '#1676a8';
         }
 
-        function addStroke(stroke, index) {
-            const path = document.createElementNS(svgNamespace, 'path');
-            path.setAttribute('class', 'practice-stroke');
-            path.setAttribute('d', stroke.d);
-            path.dataset.strokeIndex = String(index);
-            practiceStrokes.appendChild(path);
+        function fitPracticeGlyph() {
+            const requestId = ++glyphFitRequest;
+            const expectedGlyph = practiceGlyph.textContent;
+            const expectedLanguage = currentLanguage?.id;
+            const startingSize = currentLanguage?.id === 'vietnamese' ? 210 : 224;
+            practiceGlyph.style.fontSize = `${startingSize}px`;
+            practiceGlyph.setAttribute('x', '160');
+            practiceGlyph.setAttribute('y', '160');
 
-            const circle = document.createElementNS(svgNamespace, 'circle');
-            circle.setAttribute('class', 'practice-start');
-            circle.setAttribute('cx', stroke.start[0]);
-            circle.setAttribute('cy', stroke.start[1]);
-            circle.setAttribute('r', '13');
-            circle.dataset.startX = stroke.start[0];
-            circle.dataset.startY = stroke.start[1];
-            practiceStrokes.appendChild(circle);
+            const align = () => {
+                if (requestId !== glyphFitRequest || practiceGlyph.textContent !== expectedGlyph || currentLanguage?.id !== expectedLanguage) return;
+                let box;
+                try {
+                    box = practiceGlyph.getBBox();
+                } catch (error) {
+                    return;
+                }
+                if (!box.width || !box.height) return;
+                const scale = Math.min(1, 236 / box.width, 230 / box.height);
+                if (scale < 0.995) {
+                    practiceGlyph.style.fontSize = `${startingSize * scale}px`;
+                    box = practiceGlyph.getBBox();
+                }
+                const currentX = Number(practiceGlyph.getAttribute('x')) || 160;
+                const currentY = Number(practiceGlyph.getAttribute('y')) || 160;
+                practiceGlyph.setAttribute('x', String(currentX + 160 - (box.x + box.width / 2)));
+                practiceGlyph.setAttribute('y', String(currentY + 160 - (box.y + box.height / 2)));
+            };
 
-            const number = document.createElementNS(svgNamespace, 'text');
-            number.setAttribute('class', 'practice-start-number');
-            number.setAttribute('x', stroke.start[0]);
-            number.setAttribute('y', stroke.start[1] + 5);
-            number.dataset.startX = stroke.start[0];
-            number.dataset.startY = stroke.start[1];
-            number.textContent = String(index + 1);
-            practiceStrokes.appendChild(number);
+            requestAnimationFrame(() => {
+                align();
+                document.fonts?.ready?.then(() => {
+                    if (requestId !== glyphFitRequest || practiceGlyph.textContent !== expectedGlyph || currentLanguage?.id !== expectedLanguage) return;
+                    practiceGlyph.style.fontSize = `${startingSize}px`;
+                    practiceGlyph.setAttribute('x', '160');
+                    practiceGlyph.setAttribute('y', '160');
+                    align();
+                });
+            });
         }
 
-        function alignStrokeGuidesToGlyph() {
-            const paths = [...practiceStrokes.querySelectorAll('.practice-stroke')];
-            if (!paths.length) return;
-            const glyphStyle = getComputedStyle(practiceGlyph);
-            glyphMeasureContext.font = `${glyphStyle.fontWeight} ${glyphStyle.fontSize} ${glyphStyle.fontFamily}`;
-            glyphMeasureContext.textAlign = 'center';
-            const glyphMetrics = glyphMeasureContext.measureText(practiceGlyph.textContent);
-            const glyphBox = {
-                x: 160 - glyphMetrics.actualBoundingBoxLeft,
-                y: 244 - glyphMetrics.actualBoundingBoxAscent,
-                width: glyphMetrics.actualBoundingBoxLeft + glyphMetrics.actualBoundingBoxRight,
-                height: glyphMetrics.actualBoundingBoxAscent + glyphMetrics.actualBoundingBoxDescent
-            };
-            const boxes = paths.map(path => path.getBBox());
-            const pathBox = boxes.reduce((box, item) => ({
-                x: Math.min(box.x, item.x),
-                y: Math.min(box.y, item.y),
-                right: Math.max(box.right, item.x + item.width),
-                bottom: Math.max(box.bottom, item.y + item.height)
-            }), {
-                x: boxes[0].x,
-                y: boxes[0].y,
-                right: boxes[0].x + boxes[0].width,
-                bottom: boxes[0].y + boxes[0].height
-            });
-            pathBox.width = Math.max(1, pathBox.right - pathBox.x);
-            pathBox.height = Math.max(1, pathBox.bottom - pathBox.y);
-            const scaleX = glyphBox.width * .84 / pathBox.width;
-            const scaleY = glyphBox.height * .84 / pathBox.height;
-            const offsetX = glyphBox.x + (glyphBox.width - pathBox.width * scaleX) / 2 - pathBox.x * scaleX;
-            const offsetY = glyphBox.y + (glyphBox.height - pathBox.height * scaleY) / 2 - pathBox.y * scaleY;
-            const transform = `matrix(${scaleX} 0 0 ${scaleY} ${offsetX} ${offsetY})`;
-            paths.forEach(path => path.setAttribute('transform', transform));
-            practiceStrokes.querySelectorAll('[data-start-x]').forEach(marker => {
-                const x = Number(marker.dataset.startX) * scaleX + offsetX;
-                const y = Number(marker.dataset.startY) * scaleY + offsetY;
-                if (marker.tagName === 'circle') {
-                    marker.setAttribute('cx', x);
-                    marker.setAttribute('cy', y);
-                } else {
-                    marker.setAttribute('x', x);
-                    marker.setAttribute('y', y + 5);
+        function letterSpeechText(item) {
+            if (!item || !currentLanguage) return '';
+            const labelParts = item.name.split('·').map(part => part.trim());
+            if (currentLanguage.id === 'thai') return labelParts[0] || item.char;
+            if (currentLanguage.id === 'vietnamese' && item.group !== 'vowel') {
+                return labelParts.slice(1).join(' · ').replace(/[（(].*?[）)]/g, '').trim() || item.char;
+            }
+            return item.char;
+        }
+
+        function speakPracticeItem(item = currentItem, kind = 'letter') {
+            if (!item || !currentLanguage) return false;
+            const isLetter = kind === 'letter';
+            const speechText = isLetter ? letterSpeechText(item) : item.speak;
+            return window.speakText(speechText, currentLanguage.langCode, {
+                onStart: () => {
+                    if (currentItem !== item) return;
+                    practiceStatus.textContent = isLetter
+                        ? `正在播放字母名稱：${speechText}`
+                        : `正在播放例詞：${item.example}`;
+                },
+                onEnd: () => {
+                    if (currentItem === item) practiceStatus.textContent = '發音播放完成，可沿字形輪廓描摹。';
+                },
+                onError: () => {
+                    if (currentItem === item) practiceStatus.textContent = '這個瀏覽器或裝置目前沒有可用的語音；仍可繼續字形描摹。';
                 }
             });
         }
 
-        function updatePracticeItem(item) {
+        function updatePracticeItem(item, { autoSpeak = false } = {}) {
             currentItem = item;
             document.getElementById('practice-name').textContent = item.name;
-            document.getElementById('practice-character').textContent = item.char;
+            const characterHeading = document.getElementById('practice-character');
+            characterHeading.textContent = item.char;
+            characterHeading.lang = currentLanguage.langCode;
             practiceGlyph.textContent = item.char;
+            practiceGlyph.setAttribute('lang', currentLanguage.langCode);
             practiceGuide.dataset.language = currentLanguage.id;
             document.getElementById('practice-sound').textContent = item.sound;
             document.getElementById('practice-example').textContent = item.example;
             document.getElementById('practice-note').textContent = item.note;
-            practiceStrokes.replaceChildren();
-            item.strokes.forEach(addStroke);
-            clearTimeout(motionHideTimer);
-            practiceStrokes.classList.add('motion-hidden');
-            if (item.strokes.length) requestAnimationFrame(alignStrokeGuidesToGlyph);
-            animateButton.disabled = item.strokes.length === 0;
-            animateButton.textContent = item.strokes.length ? '播放筆勢示意' : '目前沒有筆勢示意';
+            fitPracticeGlyph();
             practiceCharacterTabs.querySelectorAll('button').forEach(button => {
                 const isActive = button.dataset.itemId === item.id;
                 button.classList.toggle('active', isActive);
@@ -517,28 +555,29 @@ document.addEventListener('DOMContentLoaded', () => {
             previousButton.disabled = currentItems.length < 2;
             nextButton.disabled = currentItems.length < 2;
             updateProgressSummary();
-            clearCanvas(item.strokes.length
-                ? '可沿單一淺灰字形描摹；藍色線只會在播放時短暫顯示。'
-                : '可沿單一淺灰字形描摹；此字目前不顯示未經審核的筆勢線。');
+            clearCanvas('可沿淺灰輪廓描摹；輪廓與畫面字形相同，但不代表官方筆順。');
+            if (autoSpeak && autoSpeakEnabled) speakPracticeItem(item, 'letter');
         }
 
-        function renderCharacterTabs(language, group = 'all') {
+        function renderCharacterTabs(language, group = 'all', { autoSpeak = false } = {}) {
             currentGroup = group;
             currentItems = group === 'all'
                 ? language.items
                 : language.items.filter(item => item.group === group);
             practiceCharacterTabs.replaceChildren();
+            practiceCharacterTabs.scrollLeft = 0;
             currentItems.forEach(item => {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'practice-character-button';
                 button.dataset.itemId = item.id;
                 button.textContent = item.char;
+                button.lang = language.langCode;
                 button.setAttribute('aria-label', `練習 ${item.name}`);
-                button.addEventListener('click', () => updatePracticeItem(item));
+                button.addEventListener('click', () => updatePracticeItem(item, { autoSpeak: true }));
                 practiceCharacterTabs.appendChild(button);
             });
-            if (currentItems.length) updatePracticeItem(currentItems[0]);
+            if (currentItems.length) updatePracticeItem(currentItems[0], { autoSpeak });
         }
 
         function renderGroupTabs(language) {
@@ -555,13 +594,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         item.classList.toggle('active', active);
                         item.setAttribute('aria-pressed', String(active));
                     });
-                    renderCharacterTabs(language, group.id);
+                    renderCharacterTabs(language, group.id, { autoSpeak: true });
                 });
                 practiceGroupTabs.appendChild(button);
             });
         }
 
-        function selectPracticeLanguage(language) {
+        function selectPracticeLanguage(language, { autoSpeak = false } = {}) {
             currentLanguage = language;
             practiceLanguageGuide.textContent = language.guide;
             practiceLanguageTabs.querySelectorAll('button').forEach(button => {
@@ -574,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `<li><a href="${escapeHTML(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)}</a></li>`
             ).join('');
             renderGroupTabs(language);
-            renderCharacterTabs(language);
+            renderCharacterTabs(language, 'all', { autoSpeak });
         }
 
         practiceData.languages.forEach(language => {
@@ -583,7 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.className = 'practice-language-button';
             button.dataset.language = language.id;
             button.innerHTML = `<strong>${escapeHTML(language.name)}</strong><span>${escapeHTML(language.nativeName)}</span>`;
-            button.addEventListener('click', () => selectPracticeLanguage(language));
+            button.addEventListener('click', () => selectPracticeLanguage(language, { autoSpeak: true }));
             practiceLanguageTabs.appendChild(button);
         });
         document.getElementById('practice-notice').textContent = practiceData.notice;
@@ -592,8 +631,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!currentItem || currentItems.length < 2) return;
             const index = currentItems.findIndex(item => item.id === currentItem.id);
             const nextIndex = (index + direction + currentItems.length) % currentItems.length;
-            updatePracticeItem(currentItems[nextIndex]);
-            practiceCharacterTabs.querySelector(`[data-item-id="${CSS.escape(currentItems[nextIndex].id)}"]`)?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            updatePracticeItem(currentItems[nextIndex], { autoSpeak: true });
+            const activeButton = practiceCharacterTabs.querySelector(`[data-item-id="${CSS.escape(currentItems[nextIndex].id)}"]`);
+            if (activeButton) {
+                const centeredLeft = activeButton.offsetLeft - (practiceCharacterTabs.clientWidth - activeButton.offsetWidth) / 2;
+                practiceCharacterTabs.scrollTo({ left: Math.max(0, centeredLeft), behavior: 'smooth' });
+            }
         }
 
         previousButton.addEventListener('click', () => stepPractice(-1));
@@ -604,27 +647,32 @@ document.addEventListener('DOMContentLoaded', () => {
             practiceStatus.textContent = learned ? '已加入這台裝置的學習紀錄。' : '已從學習紀錄移除。';
         });
 
-        animateButton.addEventListener('click', () => {
-            const paths = [...practiceStrokes.querySelectorAll('.practice-stroke')];
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            clearTimeout(motionHideTimer);
-            practiceStrokes.classList.remove('motion-hidden');
-            let delay = 0;
-            paths.forEach(path => {
-                path.getAnimations().forEach(animation => animation.cancel());
-                const length = path.getTotalLength();
-                const duration = reduceMotion ? 1 : Math.max(750, length * 3.5);
-                path.animate([
-                    { strokeDasharray: length, strokeDashoffset: length, opacity: 1 },
-                    { strokeDasharray: length, strokeDashoffset: 0, opacity: 1 }
-                ], { duration, delay, easing: 'ease-in-out', fill: 'both' });
-                delay += duration + (reduceMotion ? 0 : 180);
-            });
-            practiceStatus.textContent = `正在依序播放 ${paths.length} 個簡化筆勢示意。`;
-            motionHideTimer = window.setTimeout(() => {
-                practiceStrokes.classList.add('motion-hidden');
-                practiceStatus.textContent = '筆勢示意已隱藏，可沿單一淺灰字形繼續描摹。';
-            }, delay + 600);
+        function updateAutoSpeakButton() {
+            if (!speechSupported) {
+                autoSpeakButton.disabled = true;
+                practiceSpeak.disabled = true;
+                practiceExampleSpeak.disabled = true;
+                autoSpeakButton.setAttribute('aria-pressed', 'false');
+                autoSpeakButton.textContent = '此裝置無語音';
+                practiceSpeak.title = '此瀏覽器或裝置沒有提供語音合成功能';
+                practiceExampleSpeak.title = '此瀏覽器或裝置沒有提供語音合成功能';
+                return;
+            }
+            autoSpeakButton.setAttribute('aria-pressed', String(autoSpeakEnabled));
+            autoSpeakButton.textContent = `自動播放字母：${autoSpeakEnabled ? '開' : '關'}`;
+            autoSpeakButton.classList.toggle('is-off', !autoSpeakEnabled);
+        }
+
+        autoSpeakButton.addEventListener('click', () => {
+            autoSpeakEnabled = !autoSpeakEnabled;
+            try {
+                localStorage.setItem(autoSpeakKey, String(autoSpeakEnabled));
+            } catch (error) {
+                console.warn('Audio preference could not be saved', error);
+            }
+            updateAutoSpeakButton();
+            if (autoSpeakEnabled) speakPracticeItem(currentItem, 'letter');
+            else practiceStatus.textContent = '自動播放已關閉；仍可手動聆聽字母名稱或例詞。';
         });
 
         toggleGuideButton.addEventListener('click', () => {
@@ -633,9 +681,9 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleGuideButton.textContent = guideVisible ? '隱藏導引' : '顯示導引';
         });
         clearButton.addEventListener('click', () => clearCanvas());
-        practiceSpeak.addEventListener('click', () => {
-            if (currentItem && currentLanguage) window.speakText(currentItem.speak, currentLanguage.langCode);
-        });
+        practiceSpeak.addEventListener('click', () => speakPracticeItem(currentItem, 'letter'));
+        practiceExampleSpeak.addEventListener('click', () => speakPracticeItem(currentItem, 'example'));
+        updateAutoSpeakButton();
 
         let isDrawing = false;
         const drawContext = practiceCanvas.getContext('2d');
@@ -858,7 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `<li><a href="${escapeHTML(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)}</a></li>`
         ).join('');
 
-        selectPracticeLanguage(practiceData.languages[0]);
+        selectPracticeLanguage(practiceData.languages[0], { autoSpeak: true });
         renderWordCards(practiceData.languages[0]);
         selectQuizLanguage(practiceData.languages[0]);
         renderFeatureCards();
@@ -871,27 +919,54 @@ document.addEventListener('DOMContentLoaded', () => {
         const storyContainer = document.getElementById('story-container');
         const backBtn = document.getElementById('history-back-btn');
 
-        window.leafletMapInstance = L.map('leaflet-map-container', {
-            zoomControl: true,
-            scrollWheelZoom: false,
-            minZoom: 2
-        }).setView([25, 35], 2);
-
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-        }).addTo(window.leafletMapInstance);
-
         let historyData;
+        let worldData;
+        if (!window.L) {
+            storyContainer.classList.add('active');
+            storyContainer.innerHTML = '<div class="history-error"><h2>互動地圖元件載入失敗</h2><p>請檢查網路連線後，再切換到其他頁面並返回重試。</p></div>';
+            mapContainer.setAttribute('aria-label', '互動地圖元件載入失敗');
+            return false;
+        }
         try {
-            const response = await fetch('data/history-stories.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            historyData = await response.json();
+            const [historyResponse, worldResponse] = await Promise.all([
+                fetch('data/history-stories.json'),
+                fetch('data/countries.geojson')
+            ]);
+            if (!historyResponse.ok) throw new Error(`History HTTP ${historyResponse.status}`);
+            if (!worldResponse.ok) throw new Error(`World map HTTP ${worldResponse.status}`);
+            [historyData, worldData] = await Promise.all([
+                historyResponse.json(),
+                worldResponse.json()
+            ]);
         } catch (error) {
             console.error('History data error:', error);
             storyContainer.classList.add('active');
-            storyContainer.innerHTML = '<div class="history-error"><h2>歷史資料載入失敗</h2><p>請確認 data/history-stories.json 已上傳。</p></div>';
-            return;
+            storyContainer.innerHTML = '<div class="history-error"><h2>歷史資料載入失敗</h2><p>請確認歷史路線與本機世界底圖資料已完整上傳。</p></div>';
+            return false;
         }
+
+        window.leafletMapInstance = L.map('leaflet-map-container', {
+            attributionControl: false,
+            zoomControl: true,
+            scrollWheelZoom: false,
+            minZoom: 1.5,
+            zoomSnap: 0.25,
+            maxBounds: [[-70, -190], [88, 190]],
+            maxBoundsViscosity: 0.8
+        }).setView([25, 35], 2);
+
+        L.geoJSON(worldData, {
+            interactive: false,
+            style: {
+                color: '#afbdbe',
+                fillColor: '#f4f1e8',
+                fillOpacity: 0.98,
+                weight: 0.7
+            }
+        }).addTo(window.leafletMapInstance);
+        L.control.attribution({ prefix: false, position: 'bottomright' })
+            .addAttribution('<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a> public domain · Leaflet')
+            .addTo(window.leafletMapInstance);
 
         const storiesById = Object.fromEntries(historyData.stories.map(story => [story.id, story]));
         let currentLayers = [];
@@ -1037,5 +1112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { root: storyContainer, rootMargin: '-40% 0px -40% 0px', threshold: 0 });
 
         renderStoryIndex();
+        return true;
     }
 });
